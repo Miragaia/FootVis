@@ -27,10 +27,23 @@
   
   .pagination {
     display: flex;
-    margin-top: 1rem;
-    justify-content: center; 
-    gap: 10px; 
-    cursor: pointer;
+    align-items: center;     
+    justify-content: space-between; 
+    gap: 10px;
+    width: 100%;     
+    margin-top: 0.3rem;          
+}
+
+#pageInfo {
+    margin-left: auto;         
+    font-size: 0.8rem;
+}
+
+
+.pageInfo {
+
+    text-align: center; 
+    justify-items: center;
 }
 
 #prevButton,
@@ -56,8 +69,7 @@
     cursor: pointer;
     font-size: 1.5rem;
   }
-  
-  .modal {
+.modal {
     display: none; 
     position: fixed;
     z-index: 1000; 
@@ -67,7 +79,7 @@
     height: 100%;
     overflow: auto; 
     background-color: rgba(0, 0, 0, 0.5); 
-  }
+}
   
   .modal-content {
     background-color: #fff;

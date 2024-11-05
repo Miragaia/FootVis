@@ -6,7 +6,7 @@ document.querySelectorAll('.nav-link').forEach(link => {
   });
 
 
-function showSection(sectionId) {
+function showNavSection(sectionId) {
     const sections = document.querySelectorAll('.section');
     sections.forEach(section => {
       section.classList.remove('active'); 
@@ -17,9 +17,9 @@ function showSection(sectionId) {
   document.querySelectorAll('.nav-link').forEach(link => {
     link.addEventListener('click', (event) => {
       const targetSection = event.target.getAttribute('href').substring(1); 
-      showSection(targetSection);
+      showNavSection(targetSection);
     });
   });
   
-  showSection('players');
+  showNavSection('players');
   

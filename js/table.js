@@ -47,18 +47,20 @@ function renderPlayers(filteredPlayers, headers) {
         tbody.appendChild(row);
     });
 
-    // Atualiza a navegação
     document.getElementById("prevButton").disabled = currentPage === 1;
     document.getElementById("nextButton").disabled = endIndex >= filteredPlayers.length; 
+    const totalPageCount = Math.ceil(filteredPlayers.length / playersPerPage);
+    document.getElementById("pageInfo").textContent = `Página ${currentPage} de ${totalPageCount}`;
+
 }
 
 document.getElementById('playerFilterSearch').addEventListener('input', (event) => {
     const value = event.target.value.toLowerCase();
     const filteredPlayers = playersToTable.filter(player => {
-        return player.Player && ( // Verifica se o jogador tem a propriedade Player
+        return player.Player && (
             player.Player.toLowerCase().includes(value) || 
             player.Nation.toLowerCase().includes(value) || 
-            player.Position.toLowerCase().includes(value) // Corrigido para "Position"
+            player.Position.toLowerCase().includes(value)
         );
     });
     currentPage = 1; 
@@ -84,7 +86,7 @@ window.onclick = function(event) {
 function showSection(section) {
     const tableHeaderElement = document.getElementById("playersTableHeader");
     
-    tableHeaderElement.innerHTML = ""; // Limpa os cabeçalhos existentes
+    tableHeaderElement.innerHTML = ""; 
 
     const headers = headersMapping[section] || [];
     
@@ -113,4 +115,7 @@ function changePage(direction) {
     console.log(currentSection);
 }
 
-window.onload = loadPlayersToTable;
+window.onload = function() {
+    loadPlayersToTable();
+}
+
