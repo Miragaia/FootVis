@@ -1,0 +1,130 @@
+.content {
+    width: 70%; 
+    padding: 1rem;
+    display: inline-block;
+    vertical-align: top; 
+}
+
+.filters {
+    width: 30%; 
+    padding: 1rem;
+    display: inline-block; 
+    border-left: 1px solid #ccc; 
+    vertical-align: top; 
+}
+  
+  .players-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .players-table th, .players-table td {
+    border: 1px solid #ccc;
+    padding: 0.5rem;
+    text-align: left;
+    cursor: pointer;
+  }
+  
+  .pagination {
+    display: flex;
+    margin-top: 1rem;
+    justify-content: center; 
+    gap: 10px; 
+    cursor: pointer;
+}
+
+#prevButton,
+#nextButton,
+#infoButton {
+    padding: 0.5rem 1rem; 
+    background-color: #f0f0f0; 
+    border: none; 
+    border-radius: 4px; 
+    cursor: pointer; 
+}
+
+#prevButton:hover,
+#nextButton:hover,
+#infoButton:hover {
+    background-color: #e0e0e0; 
+}
+
+  
+  #infoButton {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.5rem;
+  }
+  
+  .modal {
+    display: none; 
+    position: fixed;
+    z-index: 1000; 
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto; 
+    background-color: rgba(0, 0, 0, 0.5); 
+  }
+  
+  .modal-content {
+    background-color: #fff;
+    margin: 15% auto; 
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; 
+    max-width: 600px; 
+  }
+  
+  .close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+  }
+  
+  .close:hover,
+  .close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  
+  
+  .filter-search-container {
+    position: relative;
+    max-width: 400px; 
+    margin: 1rem auto; 
+}
+
+.filter-search-input {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.tabs {
+    display: flex; 
+    margin-bottom: 10px; 
+}
+
+.tab-button {
+    flex: 1; 
+    padding: 10px; 
+    border: 1px solid #ccc; 
+    background-color: #f9f9f9;
+    cursor: pointer; 
+    transition: background-color 0.3s; 
+}
+
+.tab-button:hover {
+    background-color: #e0e0e0; 
+}
+
+.tab-button.active {
+    background-color: #d0d0d0; 
+    font-weight: bold;
+}
