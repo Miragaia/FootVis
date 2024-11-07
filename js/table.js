@@ -1,6 +1,7 @@
 let playersToTable = [];
 let currentPage = 1;
 const playersPerPage = 12;
+let filteredPlayers = [];
 
 const headersMapping = {
     general: ["id", "Player", "Nation", "Position", "Squad", "Comp", "Age", "MP", "Min", "Goals", "Assists", "Shots", "SoT", "Int", "TklWon", "Recov", "Fls", "CrdY", "CrdR"],
@@ -10,19 +11,46 @@ const headersMapping = {
     defensive: ["id", "Player", "Position", "Int", "TklWon", "Recov", "Fls", "CrdY", "CrdR"],
 };
 
-// Função para carregar os jogadores
 function loadPlayersToTable() {
     Papa.parse("../data/player_stats.csv", {
         download: true,
         header: true,
         complete: (results) => {
             playersToTable = results.data;
+            // calculate min and max age
+            const ages = playersToTable.map(player => parseInt(player.Age) || 0).filter(age => age > 0);
+            minAge = Math.min(...ages);
+            maxAge = Math.max(...ages);
+            $("#slider-range").slider({
+                range: true,
+                min: minAge,
+                max: maxAge,
+                values: [minAge, maxAge],
+                slide: function (event, ui) {
+                    $("#age").val(ui.values[0] + " - " + ui.values[1]);
+                    filterPlayersByAge(ui.values[0], ui.values[1]);
+                }
+            });
+
+            $("#age").val(minAge + " - " + maxAge);
+
             showSection('general'); 
+
         },
         error: (error) => {
             console.error("Error loading CSV:", error);
         },
     });
+}
+
+function filterPlayersByAge(min, max) {
+    filteredPlayers = playersToTable.filter(player => {
+        const age = parseInt(player.Age, 10);
+        return age >= min && age <= max;
+    });
+    currentPage = 1; 
+    const currentSection = document.querySelector('.tab-button.active').dataset.section;
+    renderPlayers(filteredPlayers, headersMapping[currentSection]);
 }
 
 function renderPlayers(filteredPlayers, headers) {
@@ -55,12 +83,13 @@ function renderPlayers(filteredPlayers, headers) {
 }
 
 document.getElementById('playerFilterSearch').addEventListener('input', (event) => {
-    const value = event.target.value.toLowerCase();
-    const filteredPlayers = playersToTable.filter(player => {
+    const value = event.target.value.trim().toLowerCase();
+    filteredPlayers = playersToTable.filter(player => {
         return player.Player && (
             player.Player.toLowerCase().includes(value) || 
-            player.Nation.toLowerCase().includes(value) || 
-            player.Position.toLowerCase().includes(value)
+            player.Comp.toLowerCase().includes(value) ||
+            player.Nation.toLowerCase().includes(value) ||
+            player.Squad.toLowerCase().includes(value)
         );
     });
     currentPage = 1; 
@@ -110,12 +139,15 @@ function showSection(section) {
 function changePage(direction) {
     currentPage += direction;
     const currentSection = document.querySelector('.tab-button.active').dataset.section; 
-    console.log(currentSection);
-    renderPlayers(playersToTable, headersMapping[currentSection]);
-    console.log(currentSection);
+    const playersToRender = filteredPlayers.length > 0 ? filteredPlayers : playersToTable;
+    renderPlayers(playersToRender, headersMapping[currentSection]);
 }
 
 window.onload = function() {
     loadPlayersToTable();
 }
+
+
+
+
 
