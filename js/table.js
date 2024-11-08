@@ -65,6 +65,10 @@ function renderPlayers(filteredPlayers, headers) {
     currentPlayers.forEach((player) => {
         const row = document.createElement("tr");
         
+        // Add click event to each row
+        row.onclick = () => {
+            window.location.href = `player-details.html?id=${player.id}`;
+        };
  
         headers.forEach(header => {
             const cell = document.createElement("td");
@@ -79,8 +83,8 @@ function renderPlayers(filteredPlayers, headers) {
     document.getElementById("nextButton").disabled = endIndex >= filteredPlayers.length; 
     const totalPageCount = Math.ceil(filteredPlayers.length / playersPerPage);
     document.getElementById("pageInfo").textContent = `Página ${currentPage} de ${totalPageCount}`;
-
 }
+
 
 document.getElementById('playerFilterSearch').addEventListener('input', (event) => {
     const value = event.target.value.trim().toLowerCase();
