@@ -6,11 +6,10 @@ function getPlayerIdFromUrl() {
 
 // Define the headers mapping for categorizing data
 const headersMapping = {
-    general: ["id", "Player", "Nation", "Position", "Squad", "Comp", "Age", "MP", "Min", "Goals", "Assists", "Shots", "SoT", "Int", "TklWon", "Recov", "Fls", "CrdY", "CrdR"],
-    playerInfo: ["id", "Player", "Nation", "Position", "Squad", "Comp", "Age"],
-    gameInfo: ["id", "Player", "Position", "MP", "Min", "Goals", "Assists"],
-    offensive: ["id", "Player", "Position", "Goals", "Shots", "SoT", "Assists"],
-    defensive: ["id", "Player", "Position", "Int", "TklWon", "Recov", "Fls", "CrdY", "CrdR"],
+    general: ["MP", "Min", "Goals", "Assists", "Shots", "SoT", "Int", "TklWon", "Recov", "Fls", "CrdY", "CrdR"],
+    gameInfo: ["MP", "Min", "Goals", "Assists"],
+    offensive: ["Goals", "Shots", "SoT", "Assists"],
+    defensive: ["Int", "TklWon", "Recov", "Fls", "CrdY", "CrdR"],
 };
 
 // Function to load and parse the CSV data for a player
@@ -34,15 +33,19 @@ function loadPlayerData(playerId) {
 
 // Function to render player details on the page dynamically
 function renderPlayerDetails(player) {
-    // Iterate over headersMapping and populate each section
+    // Display common player info
+    displayCommonPlayerInfo(player);
+
+    // Iterate over headersMapping and populate each section with tab-specific info
     Object.keys(headersMapping).forEach(category => {
         const section = document.getElementById(category);
         section.innerHTML = ''; // Clear existing content
-        
+
+        // Add a header for each section
         const categoryHeader = document.createElement("h2");
         categoryHeader.innerText = category.charAt(0).toUpperCase() + category.slice(1).replace(/([A-Z])/g, ' $1');
         section.appendChild(categoryHeader);
-        
+
         // Add the data for this category
         headersMapping[category].forEach(key => {
             if (player[key]) {
@@ -55,6 +58,19 @@ function renderPlayerDetails(player) {
 
     // Show the default section (e.g., 'general')
     showSection('general');
+}
+
+// Function to display common player information (always visible)
+function displayCommonPlayerInfo(player) {
+    const commonInfoDiv = document.getElementById('commonPlayerInfo');
+    commonInfoDiv.innerHTML = `
+        <p><strong>Player:</strong> ${player.Player || ''}</p>
+        <p><strong>Nation:</strong> ${player.Nation || ''}</p>
+        <p><strong>Position:</strong> ${player.Position || ''}</p>
+        <p><strong>Squad:</strong> ${player.Squad || ''}</p>
+        <p><strong>Comp:</strong> ${player.Comp || ''}</p>
+        <p><strong>Age:</strong> ${player.Age || ''}</p>
+    `;
 }
 
 // Function to display an error message if player data fails to load
