@@ -61,6 +61,52 @@ h1 {
     color: #333;
 }
 
+/* player-details.css */
+.container {
+    margin: 20px;
+}
+
+.player-info {
+    margin-top: 20px;
+}
+
+h2 {
+    margin-top: 20px;
+    font-size: 1.5em;
+    color: #333;
+}
+
+.general, .playerInfo, .gameInfo, .offensive, .defensive {
+    margin-bottom: 20px;
+}
+
+div > div {
+    margin: 5px 0;
+}
+
+.tabs {
+    display: flex; 
+    margin-bottom: 10px; 
+}
+
+.tab-button {
+    flex: 1; 
+    padding: 10px; 
+    border: 1px solid #ccc; 
+    background-color: #f9f9f9;
+    cursor: pointer; 
+    transition: background-color 0.3s; 
+}
+
+.tab-button:hover {
+    background-color: #e0e0e0; 
+}
+
+.tab-button.active {
+    background-color: #d0d0d0; 
+    font-weight: bold;
+}
+
 /* Optional styling for larger screens */
 @media (min-width: 768px) {
     .player-info {

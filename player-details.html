@@ -11,13 +11,35 @@
     
 </head>
 <body>
-    <div class="container" id="playerDetailsContainer">
-        <a href="index.html" class="back-button">← Back to Player List</a>
-        <h1>Player Details</h1>
-        
-        <div class="player-info" id="player-info">
+    <div class="content">
+        <!-- Tabs for selecting different sections -->
+        <div class="tabs">
+            <button class="tab-button active" data-section="general" onclick="showSection('general')">Geral</button>
+            <button class="tab-button" data-section="playerInfo" onclick="showSection('playerInfo')">Player Info</button>
+            <button class="tab-button" data-section="gameInfo" onclick="showSection('gameInfo')">Game Info</button>
+            <button class="tab-button" data-section="offensive" onclick="showSection('offensive')">Offensive</button>
+            <button class="tab-button" data-section="defensive" onclick="showSection('defensive')">Defensive</button>
+        </div>
+    
+        <!-- Sections for player data -->
+        <div id="general" class="player-section">
+            <!-- General section will be populated dynamically -->
+        </div>
+        <div id="playerInfo" class="player-section" style="display: none;">
+            <!-- Player info section will be populated dynamically -->
+        </div>
+        <div id="gameInfo" class="player-section" style="display: none;">
+            <!-- Game info section will be populated dynamically -->
+        </div>
+        <div id="offensive" class="player-section" style="display: none;">
+            <!-- Offensive section will be populated dynamically -->
+        </div>
+        <div id="defensive" class="player-section" style="display: none;">
+            <!-- Defensive section will be populated dynamically -->
         </div>
     </div>
+    
+    
 </body>
 
 </html>
