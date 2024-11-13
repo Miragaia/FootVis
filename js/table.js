@@ -44,7 +44,7 @@ function loadPlayersToTable() {
     selectedCompetitions = [];
     selectedPositions = [];
     selectedCards = [];
-    Papa.parse("./FootVis/data/player_stats.csv", {
+    Papa.parse("./data/player_stats.csv", {
         download: true,
         header: true,
         complete: (results) => {
