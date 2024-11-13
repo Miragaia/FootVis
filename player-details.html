@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,23 +9,31 @@
     <!-- Add other stylesheets as needed -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     <script src="js/player-details.js"></script>
-    
+    <link rel="stylesheet" href="css/styles.css">
+
 </head>
+
 <body>
-    <div id="players" class="section">
-        <div class="content">
-            <!-- Common Player Information (always visible) -->
-            <div id="commonPlayerInfo">
-                <p><strong>Player:</strong> <span id="commonPlayerName"></span></p>
-                <p><strong>Nation:</strong> <span id="commonPlayerNation"></span></p>
-                <p><strong>Position:</strong> <span id="commonPlayerPosition"></span></p>
-                <p><strong>Squad:</strong> <span id="commonPlayerSquad"></span></p>
-                <p><strong>Comp:</strong> <span id="commonPlayerComp"></span></p>
-                <p><strong>Age:</strong> <span id="commonPlayerAge"></span></p>
-            </div>
-            
-            <!-- Tabs for different sections -->
-            <div class="tabs">
+    <nav class="navbar">
+        <div class="navbar-left">
+            <a href="/index.html" class="nav-link active">Players</a>
+            <span class="nav-separator">|</span>
+            <a href="/compare.html" class="nav-link">Compare</a>
+        </div>
+        <div class="navbar-right">
+            <span class="logo">FootVis</span>
+        </div>
+    </nav>
+
+    <div id="players" class="section active">
+        <div class="player-image-container">
+            <img id="playerImage" >
+        </div>
+        <div id="commonPlayerInfo" class="player-details-container">
+        </div>
+
+        <!-- Tabs for different sections -->
+        <!-- <div class="tabs">
                 <button class="tab-button active" data-section="general" onclick="showSection('general')">Geral</button>
                 <button class="tab-button" data-section="gameInfo" onclick="showSection('gameInfo')">Game Info</button>
                 <button class="tab-button" data-section="offensive" onclick="showSection('offensive')">Offensive</button>
@@ -34,12 +43,11 @@
             <div id="general" class="player-section" style="display: block;"></div>
             <div id="gameInfo" class="player-section" style="display: none;"></div>
             <div id="offensive" class="player-section" style="display: none;"></div>
-            <div id="defensive" class="player-section" style="display: none;"></div>
-        </div>
+            <div id="defensive" class="player-section" style="display: none;"></div> -->
     </div>
-    
-    
-    
+
+
+
 </body>
 
 </html>
