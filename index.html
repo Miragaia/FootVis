@@ -31,11 +31,16 @@
         <div id="players" class="section active">
             <div class="content">
                 <div class="tabs">
-                    <button class="tab-button active" data-section="general" onclick="showSection('general')">Geral</button>
-                    <button class="tab-button" data-section="playerInfo" onclick="showSection('playerInfo')">Player Info</button>
-                    <button class="tab-button" data-section="gameInfo" onclick="showSection('gameInfo')">Game Info</button>
-                    <button class="tab-button" data-section="offensive" onclick="showSection('offensive')">Offensive</button>
-                    <button class="tab-button" data-section="defensive" onclick="showSection('defensive')">Defensive</button>
+                    <button class="tab-button active" data-section="general"
+                        onclick="showSection('general')">Geral</button>
+                    <button class="tab-button" data-section="playerInfo" onclick="showSection('playerInfo')">Player
+                        Info</button>
+                    <button class="tab-button" data-section="gameInfo" onclick="showSection('gameInfo')">Game
+                        Info</button>
+                    <button class="tab-button" data-section="offensive"
+                        onclick="showSection('offensive')">Offensive</button>
+                    <button class="tab-button" data-section="defensive"
+                        onclick="showSection('defensive')">Defensive</button>
                 </div>
                 <table id="playersTable" class="players-table">
                     <thead id="playersTableHeader">
@@ -49,33 +54,61 @@
                     <button id="prevButton" onclick="changePage(-1)">Anterior</button>
                     <button id="nextButton" onclick="changePage(1)">Próximo</button>
                     <button id="infoButton" onclick="openModal()"><i class="fas fa-info-circle"></i></button>
-                    <p id="pageInfo" ></p> 
+                    <p id="pageInfo"></p>
                 </div>
             </div>
-            
+
             <div class="filters">
                 <h3 style="text-align: center;">Filters</h3>
                 <div class="filter-search-container">
-                    <input type="text" id="playerFilterSearch" class="filter-search-input" placeholder="Filter Players by Name, Nation, League, Team">
+                    <input type="text" id="playerFilterSearch" class="filter-search-input"
+                        placeholder="Search Players by Name, Nation or Team...">
                     <button class="search-button">
                         <i class="fas fa-search"></i>
                     </button>
                 </div>
                 <div class="filter-age-range">
                     <div class="slider-container">
-                        <label for="age">Age Range:</label>
+                    <strong><label for="age">Age Range:</label></strong>
                         <input type="text" id="age" readonly style="border:0; color:#f6931f; font-weight:bold;">
                         <div id="slider-range"></div>
-                      </div>
-                    
+                    </div>
                 </div>
-                
-                
-                
+                <div class="filter-comp-container">
+                    <strong><label for="competition">Competition:</label></strong>
+                    <div class="checkbox-wrapper-1" id="competition-checkboxes">
+                    </div>
+                </div>
+                <div class="filter-comp-container">
+                    <strong><label for="position">Position:</label></strong>
+                    <div class="checkbox-wrapper-1" id="position-checkboxes">
+                    </div>
+                </div>
+                <div class="filter-comp-container">
+                    <strong><label for="position">Cards:</label></strong>
+                    <div class="checkbox-wrapper-1" id="cards-checkboxes">
+                    </div>
+                </div>
+                <div class="filter-age-range">
+                    <div class="slider-container">
+                    <strong><label for="goals">Goals:</label></strong>
+                        <input type="text" id="goals" readonly style="border:0; color:#f6931f; font-weight:bold;">
+                        <div id="slider-range1"></div>
+                    </div>
+                </div>
+                <div class="filter-age-range">
+                    <div class="slider-container">
+                    <strong><label for="assists">Assists:</label></strong>
+                        <input type="text" id="assists" readonly style="border:0; color:#f6931f; font-weight:bold;">
+                        <div id="slider-range2"></div>
+                    </div>
+                </div>
+                <div id="clear-filters-button-container">
+                    <button id="clear-filters-btn">Limpar Filtros</button>
+                </div>
 
-                
             </div>
-            
+
             <!-- Modal de informações -->
             <div id="infoModal" class="modal" style="display:none;">
                 <div class="modal-content">
@@ -105,7 +138,7 @@
                     <p><strong>Clique em um jogador para uma análise mais detalhada.</strong></p>
                 </div>
             </div>
-            
+
         </div>
     </main>
     <footer class="footer">
@@ -116,7 +149,6 @@
         </p>
     </footer>
     <script src="js/nav.js"></script>
-    <script src="js/search.js"></script>
     <script src="js/table.js"></script>
 </body>
 
