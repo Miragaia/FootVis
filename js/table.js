@@ -44,7 +44,7 @@ function loadPlayersToTable() {
     selectedCompetitions = [];
     selectedPositions = [];
     selectedCards = [];
-    Papa.parse("../data/player_stats.csv", {
+    Papa.parse("./FootVis/data/player_stats.csv", {
         download: true,
         header: true,
         complete: (results) => {
@@ -155,7 +155,6 @@ function renderPlayers(filteredPlayers, headers) {
 function generateCompetitionCheckboxes(competitions) {
     const checkboxContainer = document.getElementById('competition-checkboxes');
     checkboxContainer.innerHTML = ''; 
-    console.log(competitions);
     competitions.forEach(comp => {
 
         const wrapperDiv = document.createElement('div');
@@ -189,7 +188,6 @@ function generateCompetitionCheckboxes(competitions) {
 function generatepositionCheckboxes(positions) {
     const checkboxContainer = document.getElementById('position-checkboxes');
     checkboxContainer.innerHTML = ''; 
-    console.log(positions);
     positions.forEach(comp => {
 
         const wrapperDiv = document.createElement('div');
@@ -221,7 +219,6 @@ function generatepositionCheckboxes(positions) {
 function generateCardsCheckboxes(cards) {
     const checkboxContainer = document.getElementById('cards-checkboxes');
     checkboxContainer.innerHTML = ''; 
-    console.log(cards);
     cards.forEach(comp => {
 
         const wrapperDiv = document.createElement('div');
@@ -252,7 +249,6 @@ function generateCardsCheckboxes(cards) {
 
 document.getElementById('playerFilterSearch').addEventListener('input', (event) => {
     currentSearchTerm = event.target.value.trim().toLowerCase();
-    console.log(currentSearchTerm);
     applyCombinedFilters();
 });
 
@@ -310,7 +306,6 @@ function filterPlayersByCompetition() {
     const checkboxes = document.querySelectorAll('.competition-checkbox');
     selectedCompetitions = [];
     checkboxes.forEach(checkbox => {
-        console.log(checkbox);
         if (checkbox) {
             selectedCompetitions.push(checkbox.id);
         }
