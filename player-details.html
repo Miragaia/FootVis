@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="css/player-details.css">
     <!-- Add other stylesheets as needed -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="js/player-details.js"></script>
     <link rel="stylesheet" href="css/styles.css">
 
@@ -16,9 +17,9 @@
 <body>
     <nav class="navbar">
         <div class="navbar-left">
-            <a href="/index.html" class="nav-link active">Players</a>
+            <a href="./index.html" class="nav-link active">Players</a>
             <span class="nav-separator">|</span>
-            <a href="/compare.html" class="nav-link">Compare</a>
+            <a href="./compare.html" class="nav-link">Compare</a>
         </div>
         <div class="navbar-right">
             <span class="logo">FootVis</span>
@@ -45,7 +46,7 @@
             <div id="offensive" class="player-section" style="display: none;"></div>
             <div id="defensive" class="player-section" style="display: none;"></div> -->
     </div>
-
+    <div id="radarChart"></div>
 
 
 </body>
