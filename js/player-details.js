@@ -577,16 +577,14 @@ function renderRadarChart(playerData) {
 }
 
 function populatePlayerTable(playerData) {
-  // Clear any existing table content
+
   d3.select("#table-container").html("");
 
-  // Select the container and create a table
   const table = d3.select("#table-container")
                   .append("table")
                   .style("border-collapse", "collapse")
                   .style("width", "100%");
 
-  // Define the data to display as key-value pairs
   const data = [
     { dbvalue: "Shots/90" , metric: "Shots", per90: playerData["Shots/90"]},
     { dbvalue: "SoT/90" , metric: "Shots on Target", per90: playerData["SoT/90"]},
@@ -600,7 +598,6 @@ function populatePlayerTable(playerData) {
     { dbvalue: "CrdR/90" , metric: "Red Cards", per90: playerData["CrdR/90"]},
   ];
 
-  // Add table headers (Metric and Value columns)
   const header = table.append("thead").append("tr");
   header.append("th")
         .text("Statistic")
@@ -620,7 +617,6 @@ function populatePlayerTable(playerData) {
         .style("border", "1px solid #ddd")
         .style("background-color", "#f4f4f4");
 
-  // Add rows for each metric-value pair
   const tbody = table.append("tbody");
 
   data.forEach(item => {
@@ -638,42 +634,46 @@ function populatePlayerTable(playerData) {
        .style("border", "1px solid #ddd")
        .style("text-align", "center");
 
-    // Calculate the percentile for this metric
     const percentile = calculatePercentile(item.dbvalue, item.per90);
-    row.append("td")
-       .text(percentile)  // Display the percentile
+
+    const percentileCell = row.append("td")
        .style("padding", "8px")
        .style("border", "1px solid #ddd")
-       .style("text-align", "center")
-       .style("background-color", getBackgroundColor(percentile));
+       .style("text-align", "center");
+
+    percentileCell.append("span")
+       .text(percentile + "%")
+       .style("display", "block")
+       .style("margin-bottom", "5px");
+
+    const barWidth = percentile + "%";
+    const barColor = getBackgroundColor(percentile);
+
+    percentileCell.append("div")
+       .style("width", barWidth)
+       .style("height", "10px")
+       .style("background-color", barColor)
+       .style("border-radius", "5px");
   });
 }
 
-// Function to calculate the percentile for a given metric and value
 function calculatePercentile(metric, value) {
-  // Get all players' data for the specified metric
-
   const allValues = allPlayerData.map(player => (player[metric]));
-  
-  // Sort values in ascending order
+
   allValues.sort((a, b) => a - b);
 
-  // Find the rank of the player value
-  const rank = allValues.indexOf(value) + 1;  // Add 1 because index is 0-based
+  const rank = allValues.indexOf(value) + 1;
 
-  // Calculate percentile
   const percentile = (rank / allValues.length) * 100;
   return Math.round(percentile);
 }
 
-
-// Function to get background color based on percentile
 function getBackgroundColor(value) {
   const number = parseFloat(value);
-  if (number >= 90) return "#4CAF50"; // Top percentile
-  else if (number >= 70) return "#8BC34A";
-  else if (number >= 50) return "#CDDC39";
-  else if (number >= 30) return "#FFC107";
-  else if (number >= 10) return "#FF5722";
-  else return "#F44336"; // Lower percentile
+  if (number >= 90) return "#4CAF50"; // Top percentile (green)
+  else if (number >= 70) return "#8BC34A"; // High percentile (light green)
+  else if (number >= 50) return "#CDDC39"; // Mid percentile (yellowish)
+  else if (number >= 30) return "#FFC107"; // Low mid percentile (orange)
+  else if (number >= 10) return "#FF5722"; // Very low percentile (red-orange)
+  else return "#F44336"; // Lowest percentile (red)
 }
