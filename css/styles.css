@@ -79,6 +79,12 @@
     text-align: center;
     padding: 1rem;
     font-size: 0.875rem;
+    position: fixed;
+    height: 60px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    margin-bottom: 0px;
   }
 
   .footer a {

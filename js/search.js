@@ -2,7 +2,7 @@ let players = [];
 let selectedIndex = -1; 
 
 function loadPlayers() {
-  Papa.parse('../data/player_stats.csv', {
+  Papa.parse('./data/player_stats.csv', {
     download: true,
     header: true,
     complete: (results) => {

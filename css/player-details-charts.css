@@ -1,0 +1,22 @@
+.field { fill: #6c9f6d; }
+.line { stroke: white; stroke-width: 2px; fill: #6c9f6d; }
+.player { fill: lightgray; }  /* Cor para todos os jogadores */
+.highlight { fill:#f0a500; } /* Cor para o jogador em destaque */
+.text { fill: white; font-size: 12px; text-anchor: middle; }
+
+.bar { cursor: pointer !important; }
+.axis-labels { font-size: 14px; font-weight: bold; }
+.title { text-anchor: middle; font-size: 18px; font-weight: bold; }
+
+
+.tooltip {
+    display: none;
+    position: absolute;
+    background-color: black;
+    color: white;
+    padding: 5px;
+    border-radius: 5px;
+    white-space: nowrap;
+    z-index: 10;
+    font-size: 12px;
+}
