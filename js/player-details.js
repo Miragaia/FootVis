@@ -490,6 +490,7 @@ function getPlayerMetrics(playerDataRow) {
 
   // Render the radar chart
   renderRadarChart(playerData);
+  renderHeatmap(playerDataRow);
 }
 
 function renderRadarChart(playerData) {
@@ -511,7 +512,6 @@ function renderRadarChart(playerData) {
   
   // Calculate percentiles for each axis
   const percentiles = playerData[0].metrics.map((metric) => {
-    console.log(metric);
     return calculatePercentile(metric.axis, metric.value);
   });
 
@@ -693,4 +693,202 @@ function getBackgroundColor(value) {
   else if (number >= 30) return "#FFC107"; // Low mid percentile (orange)
   else if (number >= 10) return "#FF5722"; // Very low percentile (red-orange)
   else return "#F44336"; // Lowest percentile (red)
+}
+
+function renderHeatmap(playerData) {
+  const tackles = {
+    TklDef3rd: playerData.TklDef3rd || 0,
+    TklMid3rd: playerData.TklMid3rd || 0,
+    TklAtt3rd: playerData.TklAtt3rd || 0,
+  };
+
+  const svg = d3.select("#field2");
+  const width = +svg.attr("width");
+  const height = +svg.attr("height");
+
+  const thirds = [
+    { name: "Defensive", value: tackles.TklDef3rd },
+    { name: "Middfield", value: tackles.TklMid3rd },
+    { name: "Attacking", value: tackles.TklAtt3rd },
+  ];
+
+  console.log(thirds);
+
+  // Calculate the maximum value for the color scale
+  const maxTackles = d3.max(thirds, (d) => d.value);
+
+  // Define a color scale (red-yellow-green gradient)
+  const colorScale = d3.scaleLinear()
+    .domain([0, maxTackles / 2, maxTackles || 1])
+    .range(["#008000", "#ffff00","#ff0000" ]); // Red to yellow to green
+
+  // Clear previous elements
+  svg.selectAll("*").remove();
+
+  // Draw the football field layout
+  svg
+    .append("rect")
+    .attr("width", width)
+    .attr("height", height)
+    .attr("class", "field");
+
+  svg
+    .append("line")
+    .attr("x1", width / 2)
+    .attr("y1", 0)
+    .attr("x2", width / 2)
+    .attr("y2", height)
+    .attr("class", "line");
+
+  svg
+    .append("circle")
+    .attr("cx", width / 2)
+    .attr("cy", height / 2)
+    .attr("r", 40)
+    .attr("class", "line");
+
+  svg
+    .append("circle")
+    .attr("cx", width / 2)
+    .attr("cy", height / 2)
+    .attr("r", 2)
+    .attr("class", "line");
+
+  svg
+    .append("rect")
+    .attr("x", 0)
+    .attr("y", height / 4)
+    .attr("width", 60)
+    .attr("height", height / 2)
+    .attr("class", "line");
+
+  svg
+    .append("rect")
+    .attr("x", width - 60)
+    .attr("y", height / 4)
+    .attr("width", 60)
+    .attr("height", height / 2)
+    .attr("class", "line");
+
+  svg
+    .append("rect")
+    .attr("x", 0)
+    .attr("y", 0)
+    .attr("width", 10)
+    .attr("height", height)
+    .attr("class", "line");
+
+  svg
+    .append("rect")
+    .attr("x", width - 10)
+    .attr("y", 0)
+    .attr("width", 10)
+    .attr("height", height)
+    .attr("class", "line");
+
+  svg
+    .append("rect")
+    .attr("x", 0)
+    .attr("y", 0)
+    .attr("width", width)
+    .attr("height", 10)
+    .attr("class", "line");
+
+  svg
+    .append("rect")
+    .attr("x", 0)
+    .attr("y", height - 10)
+    .attr("width", width)
+    .attr("height", 10)
+    .attr("class", "line");
+
+  // Apply heatmap to the vertical thirds
+  const thirdWidth = width / 3;
+  thirds.forEach((third, i) => {
+    // Draw heatmap rectangles for each vertical third
+    svg
+      .append("rect")
+      .attr("x", i * thirdWidth + 10) // Avoid overlap with field lines
+      .attr("y", 10) // Avoid overlap with field lines
+      .attr("width", thirdWidth - 20) // Avoid overlap with field lines
+      .attr("height", height - 20)
+      .attr("fill", colorScale(third.value))
+      .attr("opacity", 0.7);
+
+    // Add labels
+    svg
+      .append("text")
+      .attr("x", i * thirdWidth + thirdWidth / 2)
+      .attr("y", height / 2)
+      .attr("dy", ".35em")
+      .attr("text-anchor", "middle")
+      .text(`${third.name}`)
+      .style("fill", "#000")
+      .style("font-size", "14px")
+      .style("font-weight", "bold");
+
+      //text colour white
+      svg
+      .append("text")
+      .attr("x", i * thirdWidth + thirdWidth / 2)
+      .attr("y", height / 2 + 20) // Position slightly below the middle
+      .attr("text-anchor", "middle")
+      .text(`${third.value}`)
+      .style("fill", "#000")
+      .style("font-size", "14px")
+      .style("font-weight", "bold");
+
+      renderIndicativeScale(maxTackles);
+  });
+
+  function renderIndicativeScale(maxTackles) {
+
+    console.log(maxTackles);
+    
+    const scaleSvg = d3.select("#indicative-scale");
+    const width = +scaleSvg.attr("width");
+    const height = +scaleSvg.attr("height");
+  
+    scaleSvg.selectAll("*").remove();
+  
+    const gradient = scaleSvg.append("defs")
+      .append("linearGradient")
+      .attr("id", "scaleGradient")
+      .attr("x1", "0%")
+      .attr("y1", "0%")
+      .attr("x2", "100%")
+      .attr("y2", "0%");
+  
+    gradient.append("stop").attr("offset", "0%").attr("stop-color", "#008000"); // Green
+    gradient.append("stop").attr("offset", "50%").attr("stop-color", "#ffff00"); // Yellow
+    gradient.append("stop").attr("offset", "100%").attr("stop-color", "#ff0000"); // Red
+  
+    scaleSvg
+      .append("rect")
+      .attr("x", 10)
+      .attr("y", 10)
+      .attr("width", width - 20)
+      .attr("height", 20)
+      .style("fill", "url(#scaleGradient)")
+      .attr("stroke", "#000");
+  
+    // Add scale labels
+    scaleSvg
+      .append("text")
+      .attr("x", 10)
+      .attr("y", 45)
+      .attr("text-anchor", "start")
+      .text("0")
+      .style("fill", "#000")
+      .style("font-size", "12px");
+  
+    scaleSvg
+      .append("text")
+      .attr("x", width - 10)
+      .attr("y", 45)
+      .attr("text-anchor", "end")
+      .text(`${maxTackles}`)
+      .style("fill", "#000")
+      .style("font-size", "12px");
+  }  
 }

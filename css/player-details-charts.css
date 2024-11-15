@@ -29,15 +29,18 @@
     align-items: flex-start;
 }
 
-/* Radar chart container style */
 #radarChart {
-    width: 50%;
+    width: 33%; /* Adjust as needed */
     padding: 10px;
 }
 
-/* Styles for the table container */
 #table-container {
-    width: 50%;
+    width: 33%; /* Adjust as needed */
+    padding: 10px;
+}
+
+#heatmap-container {
+    width: 33%; /* Adjust as needed */
     padding: 10px;
 }
 
@@ -66,4 +69,14 @@ td.percentile-value {
 td.percentile-good {
     background-color: #d4edda;
     color: #155724;
+}
+
+#field2 {
+    width: 100%;
+    height: auto;
+    border: 1px solid #ddd;
+}
+
+#scale-container {
+    padding: 30px;
 }
