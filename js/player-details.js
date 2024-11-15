@@ -17,7 +17,7 @@ function loadPlayerData(playerId) {
     header: true,
     complete: function (results) {
       allPlayerData = results.data;
-      
+
       const playerData = results.data.find((player) => player.id === playerId);
       if (playerData) {
         renderPlayerDetails(playerData);
@@ -588,18 +588,17 @@ function populatePlayerTable(playerData) {
 
   // Define the data to display as key-value pairs
   const data = [
-    { metric: "Shots", per90: playerData["Shots/90"]},
-    { metric: "Goals", per90: playerData["Goals/90"]},
-    { metric: "Assists", per90: playerData["Assists/90"]},
-    { metric: "Shots on Target", per90: playerData["SoT/90"]},
-    { metric: "Interceptions", per90: playerData["Int/90"]},
-    { metric: "Takles Won", per90: playerData["TklWon/90"]},
-    { metric: "Recoveries", per90: playerData["Recov/90"]},
-    { metric: "Fouls", per90: playerData["Fls/90"]},
-    { metric: "Yellow Cards", per90: playerData["CrdY/90"]},
-    { metric: "Red Cards", per90: playerData["CrdR/90"]},
+    { dbvalue: "Shots/90" , metric: "Shots", per90: playerData["Shots/90"]},
+    { dbvalue: "SoT/90" , metric: "Shots on Target", per90: playerData["SoT/90"]},
+    { dbvalue: "Goals/90" , metric: "Goals", per90: playerData["Goals/90"]},
+    { dbvalue: "Assists/90" , metric: "Assists", per90: playerData["Assists/90"]},
+    { dbvalue: "Int/90" , metric: "Interceptions", per90: playerData["Int/90"]},
+    { dbvalue: "TklWon/90" , metric: "Tackles Won", per90: playerData["TklWon/90"]},
+    { dbvalue: "Recov/90" , metric: "Recoveries", per90: playerData["Recov/90"]},
+    { dbvalue: "Fls/90" , metric: "Fouls", per90: playerData["Fls/90"]},
+    { dbvalue: "CrdY/90" , metric: "Yellow Cards", per90: playerData["CrdY/90"]},
+    { dbvalue: "CrdR/90" , metric: "Red Cards", per90: playerData["CrdR/90"]},
   ];
-    
 
   // Add table headers (Metric and Value columns)
   const header = table.append("thead").append("tr");
@@ -626,6 +625,7 @@ function populatePlayerTable(playerData) {
 
   data.forEach(item => {
     const row = tbody.append("tr");
+
     row.append("td")
        .text(item.metric)
        .style("padding", "8px")
@@ -636,10 +636,36 @@ function populatePlayerTable(playerData) {
        .text(item.per90)
        .style("padding", "8px")
        .style("border", "1px solid #ddd")
+       .style("text-align", "center");
+
+    // Calculate the percentile for this metric
+    const percentile = calculatePercentile(item.dbvalue, item.per90);
+    row.append("td")
+       .text(percentile)  // Display the percentile
+       .style("padding", "8px")
+       .style("border", "1px solid #ddd")
        .style("text-align", "center")
-       .style("background-color", getBackgroundColor(item.value)); // Conditional formatting
+       .style("background-color", getBackgroundColor(percentile));
   });
 }
+
+// Function to calculate the percentile for a given metric and value
+function calculatePercentile(metric, value) {
+  // Get all players' data for the specified metric
+
+  const allValues = allPlayerData.map(player => (player[metric]));
+  
+  // Sort values in ascending order
+  allValues.sort((a, b) => a - b);
+
+  // Find the rank of the player value
+  const rank = allValues.indexOf(value) + 1;  // Add 1 because index is 0-based
+
+  // Calculate percentile
+  const percentile = (rank / allValues.length) * 100;
+  return Math.round(percentile);
+}
+
 
 // Function to get background color based on percentile
 function getBackgroundColor(value) {
