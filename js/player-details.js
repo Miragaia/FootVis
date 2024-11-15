@@ -449,6 +449,9 @@ const headersMapping = {
 };
 
 function getPlayerMetrics(playerDataRow) {
+
+  console.log(playerDataRow);
+
   const playerMetrics = [
     // Métricas ofensivas
     { axis: "Goals", value: playerDataRow.Goals || 0 },
@@ -503,13 +506,19 @@ function renderRadarChart(playerData) {
     .append("g")
     .attr("transform", `translate(${width / 2}, ${height / 2})`);
 
-  const maxValue = 1; // Escala para os dados
-  const allAxis = playerData[0].metrics.map((i) => i.axis); // Eixos das métricas
-  const angleSlice = (2 * Math.PI) / allAxis.length; // Ângulo entre cada métrica
+  const allAxis = playerData[0].metrics.map((i) => i.axis); // Metric names from playerData
+  const angleSlice = (2 * Math.PI) / allAxis.length; // Angle between each metric
+  
+  // Calculate percentiles for each axis
+  const percentiles = playerData[0].metrics.map((metric) => {
+    console.log(metric);
+    return calculatePercentile(metric.axis, metric.value);
+  });
 
-  const rScale = d3.scaleLinear().range([0, radius]).domain([0, maxValue]);
+  // Define scale for the radius (based on percentiles)
+  const rScale = d3.scaleLinear().range([0, radius]).domain([0, 100]);  // Domain from 0 to 100 for percentiles
 
-  // Círculos concêntricos de fundo
+  // Draw concentric circles for background
   const levels = 5;
   for (let i = 0; i < levels; i++) {
     svg
@@ -522,10 +531,11 @@ function renderRadarChart(playerData) {
       .style("fill-opacity", 0.1);
   }
 
-  // Eixos das métricas
+  // Draw axes for each metric
   allAxis.forEach((axis, i) => {
     const angle = i * angleSlice;
 
+    // Draw the line for each axis
     svg
       .append("line")
       .attr("x1", 0)
@@ -535,6 +545,7 @@ function renderRadarChart(playerData) {
       .style("stroke", "#CDCDCD")
       .style("stroke-width", "1px");
 
+    // Add the axis labels (metric names)
     svg
       .append("text")
       .attr("x", (radius + 10) * Math.cos(angle))
@@ -547,23 +558,28 @@ function renderRadarChart(playerData) {
 
   const radarLine = d3
     .lineRadial()
-    .radius((d) => rScale(d.value))
+    .radius((d) => rScale(d.percentile)) // Use percentile value for scaling
     .angle((d, i) => i * angleSlice)
     .curve(d3.curveLinearClosed);
 
+  // Draw the radar chart area using percentiles
   svg
     .append("path")
-    .datum(playerData[0].metrics)
+    .datum(playerData[0].metrics.map((metric, i) => ({
+      axis: metric.axis,
+      percentile: percentiles[i]  // Use percentile values here
+    })))
     .attr("d", radarLine)
     .style("fill", "#66bb6a")
     .style("fill-opacity", 0.5)
     .style("stroke", "#66bb6a")
     .style("stroke-width", 2);
 
+  // Draw the data points (percentiles) on the radar chart
   playerData[0].metrics.forEach((d, i) => {
     const angle = i * angleSlice;
-    const x = rScale(d.value) * Math.cos(angle - Math.PI / 2);
-    const y = rScale(d.value) * Math.sin(angle - Math.PI / 2);
+    const x = rScale(percentiles[i]) * Math.cos(angle - Math.PI / 2);
+    const y = rScale(percentiles[i]) * Math.sin(angle - Math.PI / 2);
 
     svg
       .append("circle")
@@ -575,6 +591,7 @@ function renderRadarChart(playerData) {
       .style("stroke-width", 1.5);
   });
 }
+
 
 function populatePlayerTable(playerData) {
 
