@@ -20,3 +20,50 @@
     z-index: 10;
     font-size: 12px;
 }
+
+.flex-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    gap: 20px;
+    align-items: flex-start;
+}
+
+/* Radar chart container style */
+#radarChart {
+    width: 50%;
+    padding: 10px;
+}
+
+/* Styles for the table container */
+#table-container {
+    width: 50%;
+    padding: 10px;
+}
+
+/* Two-column table style */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 8px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+}
+
+/* Set background color based on value (optional) */
+td.percentile-value {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+td.percentile-good {
+    background-color: #d4edda;
+    color: #155724;
+}

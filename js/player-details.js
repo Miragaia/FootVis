@@ -16,6 +16,8 @@ function loadPlayerData(playerId) {
     download: true,
     header: true,
     complete: function (results) {
+      allPlayerData = results.data;
+      
       const playerData = results.data.find((player) => player.id === playerId);
       if (playerData) {
         renderPlayerDetails(playerData);
@@ -23,6 +25,7 @@ function loadPlayerData(playerId) {
         getPlayerMetrics(playerData);
         playerPosition(playerData);
         drawCharts(playerData);
+        populatePlayerTable(playerData);
       } else {
         showError("Player not found.");
       }
@@ -571,4 +574,80 @@ function renderRadarChart(playerData) {
       .style("stroke", "#fff")
       .style("stroke-width", 1.5);
   });
+}
+
+function populatePlayerTable(playerData) {
+  // Clear any existing table content
+  d3.select("#table-container").html("");
+
+  // Select the container and create a table
+  const table = d3.select("#table-container")
+                  .append("table")
+                  .style("border-collapse", "collapse")
+                  .style("width", "100%");
+
+  // Define the data to display as key-value pairs
+  const data = [
+    { metric: "Shots", per90: playerData["Shots/90"]},
+    { metric: "Goals", per90: playerData["Goals/90"]},
+    { metric: "Assists", per90: playerData["Assists/90"]},
+    { metric: "Shots on Target", per90: playerData["SoT/90"]},
+    { metric: "Interceptions", per90: playerData["Int/90"]},
+    { metric: "Takles Won", per90: playerData["TklWon/90"]},
+    { metric: "Recoveries", per90: playerData["Recov/90"]},
+    { metric: "Fouls", per90: playerData["Fls/90"]},
+    { metric: "Yellow Cards", per90: playerData["CrdY/90"]},
+    { metric: "Red Cards", per90: playerData["CrdR/90"]},
+  ];
+    
+
+  // Add table headers (Metric and Value columns)
+  const header = table.append("thead").append("tr");
+  header.append("th")
+        .text("Statistic")
+        .style("padding", "10px")
+        .style("border", "1px solid #ddd")
+        .style("background-color", "#f4f4f4");
+
+  header.append("th")
+        .text("Per 90")
+        .style("padding", "10px")
+        .style("border", "1px solid #ddd")
+        .style("background-color", "#f4f4f4");
+  
+  header.append("th")
+        .text("Percentile")
+        .style("padding", "10px")
+        .style("border", "1px solid #ddd")
+        .style("background-color", "#f4f4f4");
+
+  // Add rows for each metric-value pair
+  const tbody = table.append("tbody");
+
+  data.forEach(item => {
+    const row = tbody.append("tr");
+    row.append("td")
+       .text(item.metric)
+       .style("padding", "8px")
+       .style("border", "1px solid #ddd")
+       .style("text-align", "left");
+
+    row.append("td")
+       .text(item.per90)
+       .style("padding", "8px")
+       .style("border", "1px solid #ddd")
+       .style("text-align", "center")
+       .style("background-color", getBackgroundColor(item.value)); // Conditional formatting
+  });
+}
+
+// Function to get background color based on percentile
+function getBackgroundColor(value) {
+  const number = parseFloat(value);
+  if (number >= 90) return "#4CAF50"; // Top percentile
+  else if (number >= 70) return "#8BC34A";
+  else if (number >= 50) return "#CDDC39";
+  else if (number >= 30) return "#FFC107";
+  else if (number >= 10) return "#FF5722";
+  else return "#F44336"; // Lower percentile
 }
