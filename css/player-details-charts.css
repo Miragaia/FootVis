@@ -24,34 +24,82 @@
 .flex-container {
     display: flex;
     flex-direction: row;
-    justify-content: start;
+    justify-content: space-between;
     gap: 20px;
     align-items: flex-start;
+    margin-top: 20px;
+    flex: 1;
 }
 
 #radarChart {
-    width: 33%; /* Adjust as needed */
-    padding: 10px;
+    width: 35%; /* Adjust as needed */
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    margin-top: 20px;
+    margin-left: 20px;
 }
 
 #table-container {
-    width: 33%; /* Adjust as needed */
-    padding: 10px;
+    width: 45%; /* Adjust as needed */
+    margin-top: 20px;
+    margin-left: 20px;  
+
 }
 
 #heatmap-container {
-    width: 33%; /* Adjust as needed */
-    padding: 10px;
+    margin-top: 20px;
+    margin-left: 20px;
+    margin-right: 20px;
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+
+}
+.selector-container {
+    display: flex;
+    justify-content: space-between; /* Space out the title and dropdown */
+    align-items: center; /* Vertically center both elements */
+    margin-bottom: 15px; /* Space between the selector and the field */
+    width: 100%; /* Make sure it stretches across the container */
+}
+
+/* Title styling */
+.heatmap-title {
+    font-size: 20px;
+    font-weight: bold;
+    color: #333;
+    margin: 0;
+    text-align: left; /* Align the title to the left */
+    flex: 1; /* Allow the title to take up space to the left */
+}
+
+/* Dropdown styling */
+.metric-dropdown {
+    padding: 10px 15px;
+    font-size: 14px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+    max-width: 180px; /* Limit the width of the dropdown */
+    text-align: center;
+}
+
+#metric-selector {
+    margin-top: 20px;   
 }
 
 /* Two-column table style */
 table {
     width: 100%;
     border-collapse: collapse;
+    max-height: 100px !important;
 }
 
 th, td {
-    padding: 8px;
+    padding: 2px;
     border: 1px solid #ddd;
     text-align: left;
 }
@@ -72,11 +120,11 @@ td.percentile-good {
 }
 
 #field2 {
-    width: 100%;
-    height: auto;
-    border: 1px solid #ddd;
+    border: 2px solid #333;
+    margin-top: 10px;
+    border-radius: 10px;
 }
 
-#scale-container {
-    padding: 30px;
+#indicative-scale {
+    margin-top: 10px;
 }

@@ -70,20 +70,28 @@
     <hr>
 
     <div class="flex-container">
-        <div id="radarChart"></div> <!-- Radar chart container -->
+
 
         <!-- Table container for percentile data -->
         <div id="table-container">
-            
+            <div id="tooltip5" style="position: absolute; background-color: rgba(0, 0, 0, 0.7); color: white; padding: 5px; border-radius: 5px; opacity: 0;"></div>
+
         </div>
+        <div id="radarChart">
+            <div id="tooltip4" style="position: absolute; background-color: rgba(0, 0, 0, 0.7); color: white; padding: 5px; border-radius: 5px; opacity: 0;"></div>
+        </div> 
         <div id="heatmap-container">
-            <h2>Heatmap - Number of Tackles per 90 minutes</h2>
-            <svg id="field2" width="610" height="327"></svg>
-            <div id="scale-container">
-                <h3>Indicative Scale</h3>
-                <svg id="indicative-scale" width="610" height="50"></svg>
+            <div id="metric-selector" class="selector-container">
+                <h3 id="heatmap-title" class="heatmap-title">Tackles per 90</h3>
+                <select id="metric-dropdown" class="metric-dropdown">
+                    <option value="tackles">Tackles per 90</option>
+                    <option value="touches">Touches per 90</option>
+                </select>
             </div>
-        </div>        
+            <svg id="field2" width="400" height="200"></svg>
+            <svg id="indicative-scale" width="400" height="50"></svg>
+        </div>
+              
     </div>
 
     

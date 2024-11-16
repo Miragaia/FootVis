@@ -10,7 +10,7 @@ if (playerId) {
 } else {
   showError("No player ID provided.");
 }
-
+let allPlayerData = [];
 function loadPlayerData(playerId) {
   Papa.parse("./data/player_stats.csv", {
     download: true,
@@ -258,18 +258,24 @@ function drawPieChart(data, maxMinutes) {
     .attr("fill", (d) => color(d.data.label))
     .attr("class", "slice")
     .on("mouseover", function (event, d) {
-      const percentage = ((d.data.value / d3.sum(data, (d) => d.value)) * 100).toFixed(1);
+      const percentage = (
+        (d.data.value / d3.sum(data, (d) => d.value)) *
+        100
+      ).toFixed(1);
       const tooltip = d3.select("#tooltip3");
       tooltip.style("opacity", 1);
-      tooltip.html(`${d.data.label}: ${d.data.value} mins (${percentage}%)<br>Max Possible: ${maxMinutes} mins`)
+      tooltip
+        .html(
+          `${d.data.label}: ${d.data.value} mins (${percentage}%)<br>Max Possible: ${maxMinutes} mins`
+        )
         .style("left", `${event.pageX + 10}px`)
         .style("top", `${event.pageY - 20}px`);
 
       svg.selectAll(".slice").style("opacity", 0.3);
-      d3.select(this).style("opacity", 1); 
+      d3.select(this).style("opacity", 1);
     })
     .on("mouseout", function () {
-      d3.select("#tooltip3").style("opacity", 0); 
+      d3.select("#tooltip3").style("opacity", 0);
       svg.selectAll(".slice").style("opacity", 1);
     });
 
@@ -283,12 +289,18 @@ function drawPieChart(data, maxMinutes) {
     })
     .attr("text-anchor", "middle")
     .attr("dy", ".35em")
-    .text((d) => `${((d.data.value / d3.sum(data, (d) => d.value)) * 100).toFixed(1)}%`)
+    .text((d) =>
+      d.data.value > 0
+        ? `${((d.data.value / d3.sum(data, (d) => d.value)) * 100).toFixed(1)}%`
+        : ""
+    )
     .style("fill", "white")
     .style("font-size", "14px")
     .style("pointer-events", "none");
 
-  const legend = svg.append("g").attr("transform", `translate(${width - 160}, 40)`); // Desloca para a direita
+  const legend = svg
+    .append("g")
+    .attr("transform", `translate(${width - 160}, 40)`); // Desloca para a direita
 
   legend
     .selectAll(".legend-circle")
@@ -427,442 +439,709 @@ function drawBarChart(player) {
     .text((d) => d.label);
 }
 
-// Define the headers mapping for categorizing data
-const headersMapping = {
-  general: [
-    "MP",
-    "Min",
-    "Goals",
-    "Assists",
-    "Shots",
-    "SoT",
-    "Int",
-    "TklWon",
-    "Recov",
-    "Fls",
-    "CrdY",
-    "CrdR",
-  ],
-  gameInfo: ["MP", "Min", "Goals", "Assists"],
-  offensive: ["Goals", "Shots", "SoT", "Assists"],
-  defensive: ["Int", "TklWon", "Recov", "Fls", "CrdY", "CrdR"],
+
+const categoryColors = {
+  Attacking: "#49b5ab",  
+  Defending: "#f46b5f",  
+  Possession: "#f4ca49"  
 };
 
-function getPlayerMetrics(playerDataRow) {
-
-  console.log(playerDataRow);
-
-  const playerMetrics = [
-    // Métricas ofensivas
-    { axis: "Goals", value: playerDataRow.Goals || 0 },
-    { axis: "Shots", value: playerDataRow.Shots || 0 },
-    { axis: "SoT%", value: playerDataRow["SoT%"] || 0 },
-    { axis: "Assists", value: playerDataRow["Assists/90"] || 0 },
-    { axis: "PasAss", value: playerDataRow.PasAss || 0 },
-    { axis: "ScaDrib", value: playerDataRow.ScaDrib || 0 },
-    { axis: "GCA", value: playerDataRow.GCA || 0 },
-
-    // Métricas defensivas
-    { axis: "Tkl", value: playerDataRow["Tkl/90"] || 0 },
-    { axis: "TklWon", value: playerDataRow.TklWon || 0 },
-    { axis: "Int", value: playerDataRow["Int/90"] || 0 },
-    { axis: "Blocks", value: playerDataRow.Blocks || 0 },
-    { axis: "Clr", value: playerDataRow.Clr || 0 },
-    { axis: "CrdY", value: playerDataRow["CrdY/90"] || 0 },
-    { axis: "CrdR", value: playerDataRow["CrdR/90"] || 0 },
-
-    // Métricas de posse de bola
-    { axis: "PasTotCmp%", value: playerDataRow["PasTotCmp%"] || 0 },
-    { axis: "PasProg", value: playerDataRow.PasProg || 0 },
-    { axis: "Pas3rd", value: playerDataRow.Pas3rd || 0 },
-    { axis: "Carries", value: playerDataRow.Carries || 0 },
-    { axis: "CarTotDist", value: playerDataRow.CarTotDist || 0 },
-    { axis: "Rec", value: playerDataRow.Rec || 0 },
-    { axis: "RecProg", value: playerDataRow.RecProg || 0 },
-  ];
-
-  playerData = [
-    {
-      name: playerDataRow.Player,
-      metrics: playerMetrics,
-    },
-  ];
-
-  // Render the radar chart
-  renderRadarChart(playerData);
-  renderHeatmap(playerDataRow);
-}
-
-function renderRadarChart(playerData) {
-  const width = 500;
-  const height = 500;
-  const margin = { top: 50, right: 50, bottom: 50, left: 50 };
-  const radius = Math.min(width, height) / 2 - margin.top;
-
-  const svg = d3
-    .select("#radarChart")
-    .append("svg")
-    .attr("width", width)
-    .attr("height", height)
-    .append("g")
-    .attr("transform", `translate(${width / 2}, ${height / 2})`);
-
-  const allAxis = playerData[0].metrics.map((i) => i.axis); // Metric names from playerData
-  const angleSlice = (2 * Math.PI) / allAxis.length; // Angle between each metric
-  
-  // Calculate percentiles for each axis
-  const percentiles = playerData[0].metrics.map((metric) => {
-    return calculatePercentile(metric.axis, metric.value);
-  });
-
-  // Define scale for the radius (based on percentiles)
-  const rScale = d3.scaleLinear().range([0, radius]).domain([0, 100]);  // Domain from 0 to 100 for percentiles
-
-  // Draw concentric circles for background
-  const levels = 5;
-  for (let i = 0; i < levels; i++) {
-    svg
-      .append("circle")
-      .attr("cx", 0)
-      .attr("cy", 0)
-      .attr("r", (radius / levels) * (i + 1))
-      .style("fill", "#CDCDCD")
-      .style("stroke", "#CDCDCD")
-      .style("fill-opacity", 0.1);
-  }
-
-  // Draw axes for each metric
-  allAxis.forEach((axis, i) => {
-    const angle = i * angleSlice;
-
-    // Draw the line for each axis
-    svg
-      .append("line")
-      .attr("x1", 0)
-      .attr("y1", 0)
-      .attr("x2", radius * Math.cos(angle))
-      .attr("y2", radius * Math.sin(angle))
-      .style("stroke", "#CDCDCD")
-      .style("stroke-width", "1px");
-
-    // Add the axis labels (metric names)
-    svg
-      .append("text")
-      .attr("x", (radius + 10) * Math.cos(angle))
-      .attr("y", (radius + 10) * Math.sin(angle))
-      .attr("dy", "0.35em")
-      .style("font-size", "11px")
-      .style("text-anchor", "middle")
-      .text(axis);
-  });
-
-  const radarLine = d3
-    .lineRadial()
-    .radius((d) => rScale(d.percentile)) // Use percentile value for scaling
-    .angle((d, i) => i * angleSlice)
-    .curve(d3.curveLinearClosed);
-
-  // Draw the radar chart area using percentiles
-  svg
-    .append("path")
-    .datum(playerData[0].metrics.map((metric, i) => ({
-      axis: metric.axis,
-      percentile: percentiles[i]  // Use percentile values here
-    })))
-    .attr("d", radarLine)
-    .style("fill", "#66bb6a")
-    .style("fill-opacity", 0.5)
-    .style("stroke", "#66bb6a")
-    .style("stroke-width", 2);
-
-  // Draw the data points (percentiles) on the radar chart
-  playerData[0].metrics.forEach((d, i) => {
-    const angle = i * angleSlice;
-    const x = rScale(percentiles[i]) * Math.cos(angle - Math.PI / 2);
-    const y = rScale(percentiles[i]) * Math.sin(angle - Math.PI / 2);
-
-    svg
-      .append("circle")
-      .attr("cx", x)
-      .attr("cy", y)
-      .attr("r", 4)
-      .style("fill", "#66bb6a")
-      .style("stroke", "#fff")
-      .style("stroke-width", 1.5);
-  });
-}
 
 
 function populatePlayerTable(playerData) {
-
   d3.select("#table-container").html("");
 
-  const table = d3.select("#table-container")
-                  .append("table")
-                  .style("border-collapse", "collapse")
-                  .style("width", "100%");
+  const table = d3
+    .select("#table-container")
+    .append("table")
+    .style("border-collapse", "collapse")
+    .style("width", "100%");
 
   const data = [
-    { dbvalue: "Shots/90" , metric: "Shots", per90: playerData["Shots/90"]},
-    { dbvalue: "SoT/90" , metric: "Shots on Target", per90: playerData["SoT/90"]},
-    { dbvalue: "Goals/90" , metric: "Goals", per90: playerData["Goals/90"]},
-    { dbvalue: "Assists/90" , metric: "Assists", per90: playerData["Assists/90"]},
-    { dbvalue: "Int/90" , metric: "Interceptions", per90: playerData["Int/90"]},
-    { dbvalue: "TklWon/90" , metric: "Tackles Won", per90: playerData["TklWon/90"]},
-    { dbvalue: "Recov/90" , metric: "Recoveries", per90: playerData["Recov/90"]},
-    { dbvalue: "Fls/90" , metric: "Fouls", per90: playerData["Fls/90"]},
-    { dbvalue: "CrdY/90" , metric: "Yellow Cards", per90: playerData["CrdY/90"]},
-    { dbvalue: "CrdR/90" , metric: "Red Cards", per90: playerData["CrdR/90"]},
+    {
+      dbvalue: "Shots/90",
+      type: "Attacking",
+      metric: "Shots",
+      per90: playerData["Shots/90"],
+      explain: "Shots per 90 minutes",
+    },
+    {
+      dbvalue: "SoT/90",
+      type: "Attacking",
+      metric: "Shots on Target",
+      per90: playerData["SoT/90"],
+      explain: "Shots on Target per 90 minutes",
+    },
+    {
+      dbvalue: "Goals/90",
+      type: "Attacking",
+      metric: "Goals",
+      per90: playerData["Goals/90"],
+      explain: "Goals per 90 minutes",
+    },
+    {
+      dbvalue: "Assists/90",
+      type: "Attacking",
+      metric: "Assists",
+      per90: playerData["Assists/90"],
+      explain: "Assists per 90 minutes",
+    },
+    {
+      dbvalue: "SCA",
+      type: "Attacking",
+      metric: "Shot Creating Actions",
+      per90: playerData["SCA"],
+      explain: "Shot Creating Actions per 90 minutes",
+    },
+    {
+      dbvalue: "Int/90",
+      type: "Defending",
+      metric: "Interceptions",
+      per90: playerData["Int/90"],
+      explain: "Interceptions per 90 minutes",
+    },
+    {
+      dbvalue: "TklWon/90",
+      type: "Defending",
+      metric: "Tackles Won",
+      per90: playerData["TklWon/90"],
+      explain: "Tackles Won per 90 minutes",
+    },
+    {
+      dbvalue: "Recov/90",
+      type: "Defending",
+      metric: "Recoveries",
+      per90: playerData["Recov/90"],
+      explain: "Recoveries per 90 minutes",
+    },
+    {
+      dbvalue: "Fls/90",
+      type: "Defending",
+      metric: "Fouls",
+      per90: playerData["Fls/90"],
+      explain: "Fouls per 90 minutes",
+    },
+    {
+      dbvalue: "Clr",
+      type: "Defending",
+      metric: "Clearances",
+      per90: playerData["Clr"],
+      explain: "Clearances per 90 minutes",
+    },
+    {
+      dbvalue: "PasTotAtt",
+      type: "Possession",
+      metric: "Passes Attempted",
+      per90: playerData["PasTotAtt"],
+      explain: "Passes Attempted per 90 minutes",
+    },
+    {
+      dbvalue: "PasTotCmp%",
+      type: "Possession",
+      metric: "Pass Completion %",
+      per90: playerData["PasTotCmp%"],
+      explain: "Pass Completion % per 90 minutes",
+    },
+    {
+      dbvalue: "ToSuc",
+      type: "Possession",
+      metric: "Take-Ons Successful",
+      per90: playerData["ToSuc"],
+      explain: "Dribbling defender Successful per 90 minutes",
+    },
   ];
 
+  // Criação da tabela e cabeçalhos
   const header = table.append("thead").append("tr");
-  header.append("th")
-        .text("Statistic")
-        .style("padding", "10px")
-        .style("border", "1px solid #ddd")
-        .style("background-color", "#f4f4f4");
+  header
+    .append("th")
+    .text("Statistic")
+    .style("padding", "8px")
+    .style("border", "1px solid #ddd")
+    .style("width", "30%")
+    .style("text-align", "center")
+    .style("background-color", "#f4f4f4")
+    .style("cursor", "pointer")
+    .on("click", () => sortTable("metric"));
 
-  header.append("th")
-        .text("Per 90")
-        .style("padding", "10px")
-        .style("border", "1px solid #ddd")
-        .style("background-color", "#f4f4f4");
-  
-  header.append("th")
-        .text("Percentile")
-        .style("padding", "10px")
-        .style("border", "1px solid #ddd")
-        .style("background-color", "#f4f4f4");
+  header
+    .append("th")
+    .text("Per 90")
+    .style("width", "20%")
+    .style("text-align", "center")
+    .style("padding", "8px")
+    .style("border", "1px solid #ddd")
+    .style("background-color", "#f4f4f4")
+    .style("cursor", "pointer")
+    .on("click", () => sortTable("per90"));
 
+  header
+    .append("th")
+    .text("Percentile")
+    .style("text-align", "center")
+    .style("padding", "8px")
+    .style("border", "1px solid #ddd")
+    .style("background-color", "#f4f4f4")
+    .style("cursor", "pointer")
+    .on("click", () => sortTable("percentile"));
+
+  // Corpo da tabela
   const tbody = table.append("tbody");
 
-  data.forEach(item => {
+  // Criação das linhas da tabela
+  data.forEach((item) => {
     const row = tbody.append("tr");
 
-    row.append("td")
-       .text(item.metric)
-       .style("padding", "8px")
-       .style("border", "1px solid #ddd")
-       .style("text-align", "left");
+    row
+    .append("td")
+    .style("padding", "5px")
+    .style("border", "1px solid #ddd")
+    .style("text-align", "left")
+    .style("vertical-align", "middle")
+    .html(
+      `<span style="display: inline-block; width: 12px; height: 12px; background-color: ${categoryColors[item.type]}; border-radius: 50%; margin-right: 8px;"></span>${item.dbvalue}`
+    );
 
-    row.append("td")
-       .text(item.per90)
-       .style("padding", "8px")
-       .style("border", "1px solid #ddd")
-       .style("text-align", "center");
+    row
+      .append("td")
+      .text(item.per90)
+      .style("padding", "5px")
+      .style("border", "1px solid #ddd")
+      .style("text-align", "center");
 
-    const percentile = calculatePercentile(item.dbvalue, item.per90);
+    const [percentileReal, percentileWidth] = calculatePercentile(item.dbvalue, item.per90);
 
-    const percentileCell = row.append("td")
-       .style("padding", "8px")
-       .style("border", "1px solid #ddd")
-       .style("text-align", "center");
+    const percentileCell = row
+      .append("td")
+      .style("padding", "5px")
+      .style("border", "1px solid #ddd")
+      .style("text-align", "center");
 
-    percentileCell.append("span")
-       .text(percentile + "%")
-       .style("display", "block")
-       .style("margin-bottom", "5px");
+    percentileCell
+      .append("span")
+      .text(percentileReal)
+      .style("display", "inline-block")
+      .style("margin-right", "5px");
 
-    const barWidth = percentile + "%";
-    const barColor = getBackgroundColor(percentile);
+    const barWidth = percentileWidth + "%";
+    const barColor = getBackgroundColor(percentileReal);
 
-    percentileCell.append("div")
-       .style("width", barWidth)
-       .style("height", "10px")
-       .style("background-color", barColor)
-       .style("border-radius", "5px");
+    percentileCell
+      .append("div")
+      .style("width", barWidth)
+      .style("height", "20px")
+      .style("background-color", barColor)
+      .style("border-radius", "5px")
+      .style("display", "inline-block");
+
+    row.select("td:first-child")
+      .on("mouseover", function(event) {
+        d3.select("#tooltip4")
+          .style("opacity", 1)
+          .style("cursor", "pointer")
+          .html(
+            `<strong>Metric:</strong> ${item.metric}<br>
+             <strong>Explanation:</strong> ${item.explain}<br>
+             <strong>Caregory:</strong> ${item.type}`
+          )
+          .style("top", (event.pageY + 10) + "px") 
+          .style("left", (event.pageX + 10) + "px");
+      })
+      .on("mouseout", function() {
+        d3.select("#tooltip4").style("opacity", 0);
+      });
   });
+
+  // Função de ordenação da tabela
+  let sortOrder = "asc";
+  function sortTable(column) {
+    const sortedData = data.sort((a, b) => {
+      if (column === "percentile") {
+        const [percentileA] = calculatePercentile(a.dbvalue, a.per90);
+        const [percentileB] = calculatePercentile(b.dbvalue, b.per90);
+        return sortOrder === "asc" ? percentileB - percentileA : percentileA - percentileB;
+      }
+      return sortOrder === "asc" ? (a[column] > b[column] ? 1 : -1) : (a[column] < b[column] ? 1 : -1);
+    });
+
+    sortOrder = sortOrder === "asc" ? "desc" : "asc";
+
+    tbody.html("");
+    sortedData.forEach((item) => {
+      const row = tbody.append("tr");
+
+      row
+        .append("td")
+        .text(item.dbvalue)
+        .style("padding", "5px")
+        .style("border", "1px solid #ddd")
+        .style("text-align", "left");
+
+      row
+        .append("td")
+        .text(item.per90)
+        .style("padding", "5px")
+        .style("border", "1px solid #ddd")
+        .style("text-align", "center");
+
+      const [percentileReal, percentileWidth] = calculatePercentile(item.dbvalue, item.per90);
+
+      const percentileCell = row
+        .append("td")
+        .style("padding", "5px")
+        .style("border", "1px solid #ddd")
+        .style("text-align", "center");
+
+      percentileCell
+        .append("span")
+        .text(percentileReal)
+        .style("display", "inline-block")
+        .style("margin-right", "5px");
+
+      const barWidth = percentileWidth + "%";
+      const barColor = getBackgroundColor(percentileReal);
+
+      percentileCell
+        .append("div")
+        .style("width", barWidth)
+        .style("height", "20px")
+        .style("background-color", barColor)
+        .style("border-radius", "5px")
+        .style("display", "inline-block");
+
+        row.select("td:first-child")
+        .on("mouseover", function(event) {
+          d3.select("#tooltip4")
+            .style("opacity", 1)
+            .style("cursor", "pointer")
+            .html(
+              `<strong>Metric:</strong> ${item.metric}<br>
+               <strong>Explanation:</strong> ${item.explain}<br>
+               <strong>Caregory:</strong> ${item.type}`
+            )
+            .style("top", (event.pageY + 10) + "px") 
+            .style("left", (event.pageX + 10) + "px");
+        })
+        .on("mouseout", function() {
+          d3.select("#tooltip4").style("opacity", 0);
+        });
+    });
+  }
 }
 
 function calculatePercentile(metric, value) {
-  const allValues = allPlayerData.map(player => (player[metric]));
+  const allValues = allPlayerData.map((player) => player[metric]);
 
   allValues.sort((a, b) => a - b);
 
   const rank = allValues.indexOf(value) + 1;
 
   const percentile = (rank / allValues.length) * 100;
+
+  const adjustedPercentile = (percentile / 100) * 85;
+  return [Math.round(percentile), Math.round(adjustedPercentile)];
+}
+
+function getBackgroundColor(number) {
+  if (number >= 90) return "#4CAF50"; 
+  else if (number >= 70) return "#8BC34A"; 
+  else if (number >= 50) return "#CDDC39"; 
+  else if (number >= 30) return "#FFC107"; 
+  else if (number >= 15) return "#FF5722"; 
+  else return "#F44336"; 
+}
+
+function calculatePercentileForRadar(metric, value) {
+  const allValues = allPlayerData.map((player) => player[metric]);
+
+  allValues.sort((a, b) => a - b);
+
+  const rank = allValues.indexOf(value) + 1;
+
+  const percentile = (rank / allValues.length) * 100;
+
   return Math.round(percentile);
 }
 
-function getBackgroundColor(value) {
-  const number = parseFloat(value);
-  if (number >= 90) return "#4CAF50"; // Top percentile (green)
-  else if (number >= 70) return "#8BC34A"; // High percentile (light green)
-  else if (number >= 50) return "#CDDC39"; // Mid percentile (yellowish)
-  else if (number >= 30) return "#FFC107"; // Low mid percentile (orange)
-  else if (number >= 10) return "#FF5722"; // Very low percentile (red-orange)
-  else return "#F44336"; // Lowest percentile (red)
+function getPlayerMetrics(playerData) {
+  const data = [
+    { axis: "Shots/90", value: calculatePercentileForRadar("Shots/90", playerData["Shots/90"]), category: "Attacking", metric: "Shots", explain: "Shots per 90 minutes" },
+    { axis: "SoT/90", value: calculatePercentileForRadar("SoT/90", playerData["SoT/90"]), category: "Attacking", metric: "Shots on Target", explain: "Shots on Target per 90 minutes" },
+    { axis: "Goals/90", value: calculatePercentileForRadar("Goals/90", playerData["Goals/90"]), category: "Attacking", metric: "Goals", explain: "Goals per 90 minutes" },
+    { axis: "Assists/90", value: calculatePercentileForRadar("Assists/90", playerData["Assists/90"]), category: "Attacking", metric: "Assists", explain: "Assists per 90 minutes" },
+    { axis: "SCA", value: calculatePercentileForRadar("SCA", playerData["SCA"]), category: "Attacking", metric: "Shot Creating Actions", explain: "Shot Creating Actions per 90 minutes" },
+    { axis: "Int/90", value: calculatePercentileForRadar("Int/90", playerData["Int/90"]), category: "Defending", metric: "Interceptions", explain: "Interceptions per 90 minutes" },
+    { axis: "TklWon/90", value: calculatePercentileForRadar("TklWon/90", playerData["TklWon/90"]), category: "Defending", metric: "Tackles Won", explain: "Tackles Won per 90 minutes" },
+    { axis: "Recov/90", value: calculatePercentileForRadar("Recov/90", playerData["Recov/90"]), category: "Defending", metric: "Recoveries", explain: "Recoveries per 90 minutes" },
+    { axis: "Fls/90", value: calculatePercentileForRadar("Fls/90", playerData["Fls/90"]), category: "Defending", metric: "Fouls", explain: "Fouls per 90 minutes" },
+    { axis: "Clr", value: calculatePercentileForRadar("Clr", playerData["Clr"]), category: "Defending", metric: "Clearances", explain: "Clearances per 90 minutes" },
+    { axis: "PasTotAtt", value: calculatePercentileForRadar("PasTotAtt", playerData["PasTotAtt"]), category: "Possession", metric: "Passes Attempted", explain: "Passes Attempted per 90 minutes" },
+    { axis: "PasTotCmp%", value: calculatePercentileForRadar("PasTotCmp%", playerData["PasTotCmp%"]), category: "Possession", metric: "Pass Completion %", explain: "Pass Completion % per 90 minutes" },
+    { axis: "ToSuc", value: calculatePercentileForRadar("ToSuc", playerData["ToSuc"]), category: "Possession", metric: "Take-Ons Successful", explain: "Dribbling Defender Successful per 90 minutes" }
+  ];
+  
+  renderHeatmap(playerData);
+  renderRadarChart(data);
+}
+function renderRadarChart(playerData) {
+  const width = 400;  
+  const height = 400; 
+  const outerWidth = 520; 
+  const outerHeight = 500; 
+  const innerRadius = 0;
+  const outerRadius = Math.min(width, height) / 2;
+
+  const svg = d3
+    .select("#radarChart")
+    .append("svg")
+    .attr("width", outerWidth)
+    .attr("height", outerHeight)
+    .append("g")
+    .attr("transform", `translate(${outerWidth / 2}, ${outerHeight / 2})`); 
+
+  const radarData = playerData;
+
+  const allMetrics = radarData.map((d) => d.axis);
+  const values = radarData.map((d) => d.value);
+
+  const angleScale = d3
+    .scaleBand()
+    .domain(allMetrics)
+    .range([0, 2 * Math.PI])
+    .padding(0.1);
+
+  const radiusScale = d3
+    .scaleLinear()
+    .domain([0, 100])
+    .range([innerRadius, outerRadius]);
+
+  const numCircles = 5;
+  const circleData = d3.range(1, numCircles + 1).map((level) => {
+    return allMetrics.map((metric) => {
+      return {
+        axis: metric,
+        value: (level / numCircles) * 100,
+      };
+    });
+  });
+
+  svg
+    .selectAll(".grid-circle")
+    .data(circleData)
+    .join("path")
+    .attr("class", "grid-circle")
+    .attr("d", (d) => {
+      return d
+        .map((point, i) => {
+          const angle = angleScale(point.axis);
+          const radius = radiusScale(point.value);
+          const x = radius * Math.cos(angle);
+          const y = radius * Math.sin(angle);
+          return `${i === 0 ? "M" : "L"} ${x} ${y}`;
+        })
+        .join(" ") + " Z";
+    })
+    .attr("fill", "none")
+    .attr("stroke", "#ccc")
+    .attr("stroke-width", 1);
+
+    svg
+    .selectAll(".slice")
+    .data(radarData)
+    .join("path")
+    .attr("class", "slice")
+    .attr("d", (d, i) => {
+      const angle = angleScale(d.axis);
+      const nextAngle = angleScale(allMetrics[i + 1] || allMetrics[0]);
+      const radius = radiusScale(d.value);
+      const x0 = radius * Math.cos(angle);
+      const y0 = radius * Math.sin(angle);
+      const x1 = radius * Math.cos(nextAngle);
+      const y1 = radius * Math.sin(nextAngle);
+      return `
+        M 0 0
+        L ${x0} ${y0}
+        A ${radius} ${radius} 0 0 1 ${x1} ${y1}
+        L 0 0
+      `;
+    })
+    .style("stroke", "#fff")
+    .style("stroke-width", 1)
+    .attr("fill", (d) => categoryColors[d.category])
+    .on("mouseover", function(event, d) {
+      
+      d3.select(this)
+        .style("cursor", "pointer")
+        .style("opacity", 0.8);
+      
+      d3.select("#tooltip4")
+        .style("opacity", 1)  
+        .html(
+          `${d.axis} - ${d.explain}<br>
+           ${d.metric} - ${d.value}%`
+        )
+        .style("top", (event.pageY + 10) + "px")  
+        .style("left", (event.pageX + 10) + "px");
+    })
+    .on("mouseout", function() {
+      d3.select(this)
+        .style("opacity", 1)
+        .style("stroke", "none");  
+      
+      d3.select("#tooltip4")
+        .style("opacity", 0);
+    });
+
+    svg
+      .selectAll(".metric-label")
+      .data(radarData)
+      .join("text")
+      .attr("class", "metric-label")
+      .attr("x", (d) => {
+        const angle = angleScale(d.axis) + angleScale.bandwidth() / 2;
+        const labelRadius = outerRadius + 10;
+        return labelRadius * Math.cos(angle);
+      })
+      .attr("y", (d) => {
+        const angle = angleScale(d.axis) + angleScale.bandwidth() / 2;
+        const labelRadius = outerRadius + 10;
+        return labelRadius * Math.sin(angle);
+      })
+      .style("text-anchor", "middle")
+      .attr("dy", "1em")
+      .style("font-size", "12px")
+      .style("font-weight", "bold")
+      .text((d) => `${d.axis} (${d.value}%)`);
+
+      const legendData = [
+        { category: "Attacking", color: categoryColors["Attacking"] },
+        { category: "Defending", color: categoryColors["Defending"] },
+        { category: "Possession", color: categoryColors["Possession"] },
+      ];
+    
+      const legend = svg
+        .append("g")
+        .attr("transform", "translate(0, -10)"); // Ajustando a posição para cima
+    
+
+        legend
+          .selectAll(".legend-circle")
+          .data(legendData)
+          .join("circle")
+          .attr("class", "legend-circle")
+          .attr("cx", (d, i) => -100 + i * 100)  // Espaço entre as bolinhas
+          .attr("cy", -outerRadius - 30)  // Posição vertical no topo
+          .attr("r", 8)
+          .attr("fill", (d) => d.color);
+
+        legend
+          .selectAll(".legend-text")
+          .data(legendData)
+          .join("text")
+          .attr("class", "legend-text")
+          .attr("x", (d, i) => -80 + i * 100)  // Alinhando com as bolinhas
+          .attr("y", -outerRadius - 26)  // Posição do texto próximo às bolinhas
+          .style("text-anchor", "start")
+          .style("font-size", "12px")
+          .style("font-weight", "bold")
+          .text((d) => d.category);
+
+      
 }
 
-function renderHeatmap(playerData) {
-  const tackles = {
-    TklDef3rd: playerData.TklDef3rd || 0,
-    TklMid3rd: playerData.TklMid3rd || 0,
-    TklAtt3rd: playerData.TklAtt3rd || 0,
-  };
-
+function renderHeatmap(playerData, metricType = "tackles") {  // Define default metricType as "tackles"
   const svg = d3.select("#field2");
   const width = +svg.attr("width");
   const height = +svg.attr("height");
 
-  const thirds = [
-    { name: "Defensive", value: tackles.TklDef3rd },
-    { name: "Middfield", value: tackles.TklMid3rd },
-    { name: "Attacking", value: tackles.TklAtt3rd },
-  ];
+  // Prepare data for tackles and touches
+  const metricsData = {
+    tackles: {
+      TklDef3rd: playerData.TklDef3rd || 0,
+      TklMid3rd: playerData.TklMid3rd || 0,
+      TklAtt3rd: playerData.TklAtt3rd || 0,
+    },
+    touches: {
+      TchDef3rd: playerData.TouDef3rd || 0,
+      TchMid3rd: playerData.TouMid3rd || 0,
+      TchAtt3rd: playerData.TouAtt3rd || 0,
+    }
+  };
 
-  console.log(thirds);
+  // Function to get the data based on selected metric
+  function getMetricData(metricType) {
+    const metric = metricsData[metricType];
+    return [
+      { name: "Defensive", value: metric[`TklDef3rd`] || metric[`TchDef3rd`] },
+      { name: "Middfield", value: metric[`TklMid3rd`] || metric[`TchMid3rd`] },
+      { name: "Attacking", value: metric[`TklAtt3rd`] || metric[`TchAtt3rd`] }
+    ];
+  }
 
-  // Calculate the maximum value for the color scale
-  const maxTackles = d3.max(thirds, (d) => d.value);
+  // Function to render the heatmap
+  function render() {
+    const thirdData = getMetricData(metricType);
 
-  // Define a color scale (red-yellow-green gradient)
-  const colorScale = d3.scaleLinear()
-    .domain([0, maxTackles / 2, maxTackles || 1])
-    .range(["#008000", "#ffff00","#ff0000" ]); // Red to yellow to green
+    // Calculate the maximum value for the color scale
+    const maxMetric = d3.max(thirdData, (d) => d.value);
 
-  // Clear previous elements
-  svg.selectAll("*").remove();
+    // Define the color scale (Inverted: lower values = green, higher values = red)
+    const colorScale = d3
+      .scaleLinear()
+      .domain([0, maxMetric / 2, maxMetric || 1])
+      .range(["#00ff00", "#ffff00", "#ff0000"]); // Green to yellow to red
 
-  // Draw the football field layout
-  svg
-    .append("rect")
-    .attr("width", width)
-    .attr("height", height)
-    .attr("class", "field");
+    svg.selectAll("*").remove(); // Clear previous elements
 
-  svg
-    .append("line")
-    .attr("x1", width / 2)
-    .attr("y1", 0)
-    .attr("x2", width / 2)
-    .attr("y2", height)
-    .attr("class", "line");
+    // Draw football field layout (same as before)
+    drawField(svg, width, height);
 
-  svg
-    .append("circle")
-    .attr("cx", width / 2)
-    .attr("cy", height / 2)
-    .attr("r", 40)
-    .attr("class", "line");
+    // Apply heatmap to the vertical thirds
+    const thirdWidth = width / 3;
+    thirdData.forEach((third, i) => {
+      svg
+        .append("rect")
+        .attr("x", i * thirdWidth + 10) // Avoid overlap with field lines
+        .attr("y", 10) // Avoid overlap with field lines
+        .attr("width", thirdWidth - 20) // Avoid overlap with field lines
+        .attr("height", height - 20)
+        .attr("fill", colorScale(third.value))
+        .attr("opacity", 0.7);
 
-  svg
-    .append("circle")
-    .attr("cx", width / 2)
-    .attr("cy", height / 2)
-    .attr("r", 2)
-    .attr("class", "line");
+      // Add labels
+      svg
+        .append("text")
+        .attr("x", i * thirdWidth + thirdWidth / 2)
+        .attr("y", height / 2)
+        .attr("dy", ".35em")
+        .attr("text-anchor", "middle")
+        .text(`${third.name}`)
+        .style("fill", "#000")
+        .style("font-size", "14px")
+        .style("font-weight", "bold");
 
-  svg
-    .append("rect")
-    .attr("x", 0)
-    .attr("y", height / 4)
-    .attr("width", 60)
-    .attr("height", height / 2)
-    .attr("class", "line");
+      // Add the value text
+      svg
+        .append("text")
+        .attr("x", i * thirdWidth + thirdWidth / 2)
+        .attr("y", height / 2 + 20)
+        .attr("text-anchor", "middle")
+        .text(`${third.value}`)
+        .style("fill", "#000")
+        .style("font-size", "14px")
+        .style("font-weight", "bold");
+    });
 
-  svg
-    .append("rect")
-    .attr("x", width - 60)
-    .attr("y", height / 4)
-    .attr("width", 60)
-    .attr("height", height / 2)
-    .attr("class", "line");
+    // Render the scale
+    renderIndicativeScale(maxMetric);
 
-  svg
-    .append("rect")
-    .attr("x", 0)
-    .attr("y", 0)
-    .attr("width", 10)
-    .attr("height", height)
-    .attr("class", "line");
+    // Update the title based on the selected metric
+    updateTitle(metricType);
+  }
 
-  svg
-    .append("rect")
-    .attr("x", width - 10)
-    .attr("y", 0)
-    .attr("width", 10)
-    .attr("height", height)
-    .attr("class", "line");
-
-  svg
-    .append("rect")
-    .attr("x", 0)
-    .attr("y", 0)
-    .attr("width", width)
-    .attr("height", 10)
-    .attr("class", "line");
-
-  svg
-    .append("rect")
-    .attr("x", 0)
-    .attr("y", height - 10)
-    .attr("width", width)
-    .attr("height", 10)
-    .attr("class", "line");
-
-  // Apply heatmap to the vertical thirds
-  const thirdWidth = width / 3;
-  thirds.forEach((third, i) => {
-    // Draw heatmap rectangles for each vertical third
+  // Function to render field layout
+  function drawField(svg, width, height) {
     svg
       .append("rect")
-      .attr("x", i * thirdWidth + 10) // Avoid overlap with field lines
-      .attr("y", 10) // Avoid overlap with field lines
-      .attr("width", thirdWidth - 20) // Avoid overlap with field lines
-      .attr("height", height - 20)
-      .attr("fill", colorScale(third.value))
-      .attr("opacity", 0.7);
+      .attr("width", width)
+      .attr("height", height)
+      .attr("class", "field");
 
-    // Add labels
     svg
-      .append("text")
-      .attr("x", i * thirdWidth + thirdWidth / 2)
-      .attr("y", height / 2)
-      .attr("dy", ".35em")
-      .attr("text-anchor", "middle")
-      .text(`${third.name}`)
-      .style("fill", "#000")
-      .style("font-size", "14px")
-      .style("font-weight", "bold");
+      .append("line")
+      .attr("x1", width / 2)
+      .attr("y1", 0)
+      .attr("x2", width / 2)
+      .attr("y2", height)
+      .attr("class", "line");
 
-      //text colour white
-      svg
-      .append("text")
-      .attr("x", i * thirdWidth + thirdWidth / 2)
-      .attr("y", height / 2 + 20) // Position slightly below the middle
-      .attr("text-anchor", "middle")
-      .text(`${third.value}`)
-      .style("fill", "#000")
-      .style("font-size", "14px")
-      .style("font-weight", "bold");
+    svg
+      .append("circle")
+      .attr("cx", width / 2)
+      .attr("cy", height / 2)
+      .attr("r", 40)
+      .attr("class", "line");
 
-      renderIndicativeScale(maxTackles);
-  });
+    svg
+      .append("circle")
+      .attr("cx", width / 2)
+      .attr("cy", height / 2)
+      .attr("r", 2)
+      .attr("class", "line");
 
-  function renderIndicativeScale(maxTackles) {
+    svg
+      .append("rect")
+      .attr("x", 0)
+      .attr("y", height / 4)
+      .attr("width", 60)
+      .attr("height", height / 2)
+      .attr("class", "line");
 
-    console.log(maxTackles);
-    
+    svg
+      .append("rect")
+      .attr("x", width - 60)
+      .attr("y", height / 4)
+      .attr("width", 60)
+      .attr("height", height / 2)
+      .attr("class", "line");
+
+    svg
+      .append("rect")
+      .attr("x", 0)
+      .attr("y", 0)
+      .attr("width", 10)
+      .attr("height", height)
+      .attr("class", "line");
+
+    svg
+      .append("rect")
+      .attr("x", width - 10)
+      .attr("y", 0)
+      .attr("width", 10)
+      .attr("height", height)
+      .attr("class", "line");
+
+    svg
+      .append("rect")
+      .attr("x", 0)
+      .attr("y", 0)
+      .attr("width", width)
+      .attr("height", 10)
+      .attr("class", "line");
+
+    svg
+      .append("rect")
+      .attr("x", 0)
+      .attr("y", height - 10)
+      .attr("width", width)
+      .attr("height", 10)
+      .attr("class", "line");
+  }
+
+  // Function to render the scale
+  function renderIndicativeScale(maxMetric) {
     const scaleSvg = d3.select("#indicative-scale");
     const width = +scaleSvg.attr("width");
     const height = +scaleSvg.attr("height");
-  
+
     scaleSvg.selectAll("*").remove();
-  
-    const gradient = scaleSvg.append("defs")
+
+    const gradient = scaleSvg
+      .append("defs")
       .append("linearGradient")
       .attr("id", "scaleGradient")
       .attr("x1", "0%")
       .attr("y1", "0%")
       .attr("x2", "100%")
       .attr("y2", "0%");
-  
-    gradient.append("stop").attr("offset", "0%").attr("stop-color", "#008000"); // Green
+
+    gradient.append("stop").attr("offset", "0%").attr("stop-color", "#00ff00"); // Green
     gradient.append("stop").attr("offset", "50%").attr("stop-color", "#ffff00"); // Yellow
-    gradient.append("stop").attr("offset", "100%").attr("stop-color", "#ff0000"); // Red
-  
+    gradient
+      .append("stop")
+      .attr("offset", "100%")
+      .attr("stop-color", "#ff0000"); // Red
+
     scaleSvg
       .append("rect")
       .attr("x", 10)
@@ -871,7 +1150,7 @@ function renderHeatmap(playerData) {
       .attr("height", 20)
       .style("fill", "url(#scaleGradient)")
       .attr("stroke", "#000");
-  
+
     // Add scale labels
     scaleSvg
       .append("text")
@@ -881,14 +1160,35 @@ function renderHeatmap(playerData) {
       .text("0")
       .style("fill", "#000")
       .style("font-size", "12px");
-  
+
     scaleSvg
       .append("text")
       .attr("x", width - 10)
       .attr("y", 45)
       .attr("text-anchor", "end")
-      .text(`${maxTackles}`)
+      .text(`${maxMetric}`)
       .style("fill", "#000")
       .style("font-size", "12px");
-  }  
+  }
+
+  // Function to update the title based on the selected metric
+  function updateTitle(metricType) {
+    const title = metricType === "tackles" ? "Tackles Heatmap" : "Touches Heatmap";
+    d3.select("#heatmap-title")
+      .text(title) // Set the new title based on metric
+      .style("font-size", "18px")
+      .style("font-weight", "bold")
+      .style("text-anchor", "middle")
+      .style("fill", "#000");
+  }
+
+  // Event listener for metric dropdown change
+  d3.select("#metric-dropdown").on("change", function() {
+    const selectedMetric = this.value;
+    renderHeatmap(playerData, selectedMetric); // Re-render heatmap based on selection
+  });
+
+  // Initial render with default metric (tackles)
+  render();
 }
+
