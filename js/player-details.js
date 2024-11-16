@@ -551,6 +551,12 @@ function populatePlayerTable(playerData) {
     },
   ];
 
+  const percentiles = data.map((item) => calculatePercentile(item.dbvalue, item.per90)[0]);
+  const maxPercentile = Math.max(...percentiles);
+  const minPercentile = Math.min(...percentiles);
+  const avgPercentile = (percentiles.reduce((sum, val) => sum + val, 0) / percentiles.length).toFixed(2);
+
+
   // Criação da tabela e cabeçalhos
   const header = table.append("thead").append("tr");
   header
@@ -642,13 +648,25 @@ function populatePlayerTable(playerData) {
           .html(
             `<strong>Metric:</strong> ${item.metric}<br>
              <strong>Explanation:</strong> ${item.explain}<br>
-             <strong>Caregory:</strong> ${item.type}`
+             <strong>Category:</strong> ${item.type}`
           )
           .style("top", (event.pageY + 10) + "px") 
           .style("left", (event.pageX + 10) + "px");
       })
       .on("mouseout", function() {
         d3.select("#tooltip4").style("opacity", 0);
+      });
+
+      row.on("click", () => {
+        showModal({
+          metric: item.metric,
+          explain: item.explain,
+          type: item.type,
+          per90: item.per90,
+          maxPercentile,
+          minPercentile,
+          avgPercentile,
+        });
       });
   });
 
@@ -717,7 +735,7 @@ function populatePlayerTable(playerData) {
             .html(
               `<strong>Metric:</strong> ${item.metric}<br>
                <strong>Explanation:</strong> ${item.explain}<br>
-               <strong>Caregory:</strong> ${item.type}`
+               <strong>Category:</strong> ${item.type}`
             )
             .style("top", (event.pageY + 10) + "px") 
             .style("left", (event.pageX + 10) + "px");
@@ -1191,4 +1209,40 @@ function renderHeatmap(playerData, metricType = "tackles") {  // Define default 
   // Initial render with default metric (tackles)
   render();
 }
+
+function showModal(data) {
+  console.log("showModal called with data:", data);
+
+  if (!d3.select("#modal").node()) {
+    console.error("#modal element is missing in the DOM.");
+  }
+  
+  if (!d3.select("#modal-overlay").node()) {
+    console.error("#modal-overlay element is missing in the DOM.");
+  }
+
+  d3.select("#modal-content").html(`
+    <p><strong>Metric:</strong> ${data.metric}</p>
+    <p><strong>Description:</strong> ${data.explain}</p>
+    <p><strong>Category:</strong> ${data.type}</p>
+    <p><strong>Per 90:</strong> ${data.per90}</p>
+    <p><strong>Max Percentile:</strong> ${data.maxPercentile}</p>
+    <p><strong>Min Percentile:</strong> ${data.minPercentile}</p>
+    <p><strong>Average Percentile:</strong> ${data.avgPercentile}</p>
+  `);
+
+  d3.select("#modal").style("display", "block");
+  d3.select("#modal-overlay").style("display", "block");
+
+  d3.select("#modal-close").on("click", function () {
+    d3.select("#modal").style("display", "none");
+    d3.select("#modal-overlay").style("display", "none");
+  });
+  
+  d3.select("#modal-overlay").on("click", function () {
+    d3.select("#modal").style("display", "none");
+    d3.select("#modal-overlay").style("display", "none");
+  });
+}
+
 

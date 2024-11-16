@@ -128,3 +128,11 @@ td.percentile-good {
 #indicative-scale {
     margin-top: 10px;
 }
+
+#modal {
+z-index: 1000;
+}
+
+#modal-overlay {
+z-index: 999;
+}

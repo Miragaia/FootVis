@@ -144,11 +144,11 @@ h2 {
     font-weight: bold;
 }
 
-/* Player details section styling */
+/* Player details section styling
 .player-details-section {
     display: none;
     margin-top: 20px;
-}
+} */
 
 /* Optional styling for larger screens */
 @media (min-width: 768px) {
