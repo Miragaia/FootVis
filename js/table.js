@@ -44,12 +44,13 @@ function loadPlayersToTable() {
     selectedCompetitions = [];
     selectedPositions = [];
     selectedCards = [];
+    currentSearchTerm = "";
     Papa.parse("./data/player_stats.csv", {
         download: true,
         header: true,
         complete: (results) => {
-            playersToTable = results.data;
-            // calculate min and max age
+            playersToTable = results.data;        
+            console.log(playersToTable);    
             const ages = playersToTable.map(player => parseInt(player.Age) || 0).filter(age => age > 0);
             const goals = playersToTable.map(player => parseInt(player.Goals) || 0).filter(goals => goals > 0);
             const assists = playersToTable.map(player=> parseInt(player.Assists) || 0).filter(assists => assists > 0);
@@ -120,6 +121,9 @@ function loadPlayersToTable() {
     });
 }
 
+let sortColumn = null; // Guarda a coluna atualmente sendo ordenada
+let sortDirection = 'asc'; // Direção da ordenação: 'asc' (ascendente) ou 'desc' (descendente)
+
 function renderPlayers(filteredPlayers, headers) {
     const tbody = document.getElementById('playersTableBody');
     tbody.innerHTML = "";
@@ -129,10 +133,10 @@ function renderPlayers(filteredPlayers, headers) {
 
     const currentPlayers = filteredPlayers.slice(startIndex, endIndex);
 
+
     currentPlayers.forEach((player) => {
         const row = document.createElement("tr");
         
-     
         row.onclick = () => {
             window.location.href = `player-details.html?id=${player.id}`;
         };
@@ -151,6 +155,78 @@ function renderPlayers(filteredPlayers, headers) {
     const totalPageCount = Math.ceil(filteredPlayers.length / playersPerPage);
     document.getElementById("pageInfo").textContent = `Página ${currentPage} de ${totalPageCount}`;
 }
+
+function renderTableHeaders(headers) {
+    const tableHeaderElement = document.getElementById("playersTableHeader");
+    tableHeaderElement.innerHTML = "";
+
+    headers.forEach(header => {
+        const th = document.createElement("th");
+        th.textContent = header;
+
+        // Adiciona funcionalidade de sort
+        th.onclick = () => {
+            if (sortColumn === header) {
+                sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+            } else {
+                sortColumn = header;
+                sortDirection = 'asc';
+            }
+
+            playersToSort = filteredPlayers.length > 0 ? filteredPlayers : playersToTable;
+
+            playersToSort.sort((a, b) => {
+                let valA = a[header] || ''; 
+                let valB = b[header] || '';
+
+                if (!isNaN(valA) && !isNaN(valB)) {
+                    valA = Number(valA);
+                    valB = Number(valB);
+                } else {
+                    valA = valA.toString().toLowerCase();
+                    valB = valB.toString().toLowerCase();
+                }
+                
+                if (valA < valB) return sortDirection === 'asc' ? -1 : 1;
+                if (valA > valB) return sortDirection === 'asc' ? 1 : -1;
+                return 0;
+            });
+            console.log(playersToSort);
+            renderPlayers(playersToSort, headers);
+            renderTableHeaders(headers);
+        };
+
+        if (sortColumn === header) {
+            th.style.backgroundColor = sortDirection === 'asc' ? '#cce5ff' : '#f8d7da'; // Azul claro para asc e vermelho claro para desc
+            th.style.color = sortDirection === 'asc' ? '#004085' : '#721c24'; // Azul escuro para asc e vermelho escuro para desc
+        } else {
+            th.style.backgroundColor = ''; // Reseta para cabeçalhos não selecionados
+            th.style.color = ''; // Reseta a cor do texto para cabeçalhos não selecionados
+        }
+
+        tableHeaderElement.appendChild(th);
+    });
+}
+
+function showSection(section) {
+    const headers = headersMapping[section] || [];
+    
+    // Renderiza os cabeçalhos com funcionalidade de sort
+    renderTableHeaders(headers);
+
+    currentPage = 1; 
+
+    // Renderiza os jogadores para a seção escolhida
+    renderPlayers(playersToTable, headers);
+
+    // Atualiza a aba ativa
+    const activeSection = document.querySelector('.tab-button.active');
+    if (activeSection) {
+        activeSection.classList.remove('active');
+    }
+    document.querySelector(`[data-section="${section}"]`).classList.add('active');
+}
+
 
 function generateCompetitionCheckboxes(competitions) {
     const checkboxContainer = document.getElementById('competition-checkboxes');
@@ -265,30 +341,6 @@ window.onclick = function(event) {
     if (event.target === modal) {
         closeModal();
     }
-}
-
-function showSection(section) {
-    const tableHeaderElement = document.getElementById("playersTableHeader");
-    
-    tableHeaderElement.innerHTML = ""; 
-
-    const headers = headersMapping[section] || [];
-    
-    headers.forEach(header => {
-        const th = document.createElement("th");
-        th.textContent = header;
-        tableHeaderElement.appendChild(th);
-    });
-
-    currentPage = 1; 
-
-    renderPlayers(playersToTable, headers);
-
-    const activeSection = document.querySelector('.tab-button.active');
-    if (activeSection) {
-        activeSection.classList.remove('active');
-    }
-    document.querySelector(`[data-section="${section}"]`).classList.add('active');
 }
 
 function changePage(direction) {

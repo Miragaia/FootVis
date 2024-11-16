@@ -469,6 +469,9 @@ function calculateStats(playerData, allPlayerData) {
     // Calculate max, min, and avg
     statValues[`${stat}_max`] = Math.max(...values);
     statValues[`${stat}_min`] = Math.min(...values);
+    // adiciona ainda o jogador com max e min
+    statValues[`${stat}_max_player`] = allPlayerData[values.indexOf(statValues[`${stat}_max`])].Player;
+    statValues[`${stat}_min_player`] = allPlayerData[values.indexOf(statValues[`${stat}_min`])].Player;
     const avg = values.reduce((sum, value) => sum + value, 0) / values.length;
     statValues[`${stat}_avg`] = Math.round(avg * 100) / 100; // Round to 2 decimal places
     console.log(statValues);
@@ -699,6 +702,8 @@ function populatePlayerTable(playerData,allPlayerData) {
             maxPer90: statValues[`${statKey}_max`],   // Corrected max value lookup
             minPer90: statValues[`${statKey}_min`],   // Corrected min value lookup
             avgPer90: statValues[`${statKey}_avg`],   // Corrected avg value lookup
+            maxPlayer: statValues[`${statKey}_max_player`],
+            minPlayer: statValues[`${statKey}_min_player`],
         });
     });
   });
@@ -1263,8 +1268,8 @@ function showModal(data) {
     <p><strong>Description:</strong> ${data.explain}</p>
     <p><strong>Category:</strong> ${data.type}</p>
     <p><strong>Per 90:</strong> ${data.per90}</p>
-    <p><strong>Max Per 90:</strong> ${data.maxPer90}</p>
-    <p><strong>Min Per 90:</strong> ${data.minPer90}</p>
+    <p><strong>Max Per 90:</strong> ${data.maxPer90} - ${data.maxPlayer}</p>
+    <p><strong>Min Per 90:</strong> ${data.minPer90} - ${data.minPlayer}</p>
     <p><strong>Average Per 90:</strong> ${data.avgPer90}</p>
   `);
 
