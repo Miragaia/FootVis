@@ -25,7 +25,7 @@ function loadPlayerData(playerId) {
         getPlayerMetrics(playerData);
         playerPosition(playerData);
         drawCharts(playerData);
-        populatePlayerTable(playerData);
+        populatePlayerTable(playerData,allPlayerData);
       } else {
         showError("Player not found.");
       }
@@ -446,9 +446,43 @@ const categoryColors = {
   Possession: "#f4ca49"  
 };
 
+function calculateStats(playerData, allPlayerData) {
+  const stats = [
+    "Shots/90", "SoT/90", "Goals/90", "Assists/90", "SCA",
+    "Int/90", "TklWon/90", "Recov/90", "Fls/90", "Clr",
+    "PasTotAtt", "PasTotCmp%", "ToSuc"
+  ];
+
+  let statValues = {};
+
+  stats.forEach(stat => {
+    // Get all values for the stat from all players, ensuring they are numbers
+    console.log(allPlayerData);
+    const values = allPlayerData.map(player => {
+      const value = player[stat];
+      const numericValue = parseFloat(value);
+      return isNaN(numericValue) ? 0 : numericValue;
+    });
+
+    console.log(`Values for ${stat}:`, values); // Debugging step
+
+    // Calculate max, min, and avg
+    statValues[`${stat}_max`] = Math.max(...values);
+    statValues[`${stat}_min`] = Math.min(...values);
+    const avg = values.reduce((sum, value) => sum + value, 0) / values.length;
+    statValues[`${stat}_avg`] = Math.round(avg * 100) / 100; // Round to 2 decimal places
+    console.log(statValues);
+  });
+
+  return statValues;
+}
 
 
-function populatePlayerTable(playerData) {
+
+
+function populatePlayerTable(playerData,allPlayerData) {
+  const statValues = calculateStats(playerData,allPlayerData);
+  
   d3.select("#table-container").html("");
 
   const table = d3
@@ -551,12 +585,6 @@ function populatePlayerTable(playerData) {
     },
   ];
 
-  const percentiles = data.map((item) => calculatePercentile(item.dbvalue, item.per90)[0]);
-  const maxPercentile = Math.max(...percentiles);
-  const minPercentile = Math.min(...percentiles);
-  const avgPercentile = (percentiles.reduce((sum, val) => sum + val, 0) / percentiles.length).toFixed(2);
-
-
   // Criação da tabela e cabeçalhos
   const header = table.append("thead").append("tr");
   header
@@ -658,17 +686,23 @@ function populatePlayerTable(playerData) {
       });
 
       row.on("click", () => {
+        console.log(item);
+    
+        // Assuming item.dbvalue corresponds to the stat name (e.g., "Shots/90")
+        const statKey = item.dbvalue;
+    
         showModal({
-          metric: item.metric,
-          explain: item.explain,
-          type: item.type,
-          per90: item.per90,
-          maxPercentile,
-          minPercentile,
-          avgPercentile,
+            metric: item.metric,
+            explain: item.explain,
+            type: item.type,
+            per90: item.per90,
+            maxPer90: statValues[`${statKey}_max`],   // Corrected max value lookup
+            minPer90: statValues[`${statKey}_min`],   // Corrected min value lookup
+            avgPer90: statValues[`${statKey}_avg`],   // Corrected avg value lookup
         });
-      });
+    });
   });
+}
 
   // Função de ordenação da tabela
   let sortOrder = "asc";
@@ -745,7 +779,6 @@ function populatePlayerTable(playerData) {
         });
     });
   }
-}
 
 function calculatePercentile(metric, value) {
   const allValues = allPlayerData.map((player) => player[metric]);
@@ -1213,27 +1246,33 @@ function renderHeatmap(playerData, metricType = "tackles") {  // Define default 
 function showModal(data) {
   console.log("showModal called with data:", data);
 
+  // Check if modal elements exist in the DOM
   if (!d3.select("#modal").node()) {
     console.error("#modal element is missing in the DOM.");
+    return;
   }
   
   if (!d3.select("#modal-overlay").node()) {
     console.error("#modal-overlay element is missing in the DOM.");
+    return;
   }
 
+  // Populate modal content with the new data structure
   d3.select("#modal-content").html(`
     <p><strong>Metric:</strong> ${data.metric}</p>
     <p><strong>Description:</strong> ${data.explain}</p>
     <p><strong>Category:</strong> ${data.type}</p>
     <p><strong>Per 90:</strong> ${data.per90}</p>
-    <p><strong>Max Percentile:</strong> ${data.maxPercentile}</p>
-    <p><strong>Min Percentile:</strong> ${data.minPercentile}</p>
-    <p><strong>Average Percentile:</strong> ${data.avgPercentile}</p>
+    <p><strong>Max Per 90:</strong> ${data.maxPer90}</p>
+    <p><strong>Min Per 90:</strong> ${data.minPer90}</p>
+    <p><strong>Average Per 90:</strong> ${data.avgPer90}</p>
   `);
 
+  // Display the modal and overlay
   d3.select("#modal").style("display", "block");
   d3.select("#modal-overlay").style("display", "block");
 
+  // Close the modal when the close button or overlay is clicked
   d3.select("#modal-close").on("click", function () {
     d3.select("#modal").style("display", "none");
     d3.select("#modal-overlay").style("display", "none");
@@ -1244,5 +1283,6 @@ function showModal(data) {
     d3.select("#modal-overlay").style("display", "none");
   });
 }
+
 
 
