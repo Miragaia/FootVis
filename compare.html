@@ -4,16 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FotVis - Football Visualization</title>
+    <title>FootVis - Compare Players</title>
     <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="css/search.css">
-    <link rel="stylesheet" href="css/table.css">
+    <link rel="stylesheet" href="css/compare.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.14.1/themes/base/jquery-ui.css">
-    <link rel="stylesheet" href="/resources/demos/style.css">
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
-    <script src="https://code.jquery.com/ui/1.14.1/jquery-ui.js"></script>
 </head>
 
 <body>
@@ -30,25 +26,41 @@
         </div>
     </nav>
     <main>
-        <div id="compare" class="section active">
-            <div class="search-container">
-                <input type="text" id="playerSearch" class="search-input" placeholder="Add Players to Compare">
-                <button class="search-button">
-                    <i class="fas fa-search"></i>
-                </button>
-                <ul id="suggestions" class="suggestions"></ul>
+        <div id="compare" class="compare-container">
+            <!-- Left Column -->
+            <div class="column">
+                <div class="player-card">
+                    <h2>Player 1</h2>
+                    <div class="search-container">
+                        <input type="text" id="playerSearch" class="search-input" placeholder="Search Player 1">
+                        <ul id="suggestions" class="suggestions"></ul>
+                    </div>
+                    <div class="player-stats" id="player1Stats">
+                        <p>Select a player to view their stats.</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Right Column -->
+            <div class="column">
+                <div class="player-card">
+                    <h2>Player 2</h2>
+                    <div class="search-container">
+                        <input type="text" id="playerSearch2" class="search-input" placeholder="Search Player 2">
+                        <ul id="suggestions2" class="suggestions"></ul>
+                    </div>
+                    <div class="player-stats" id="player2Stats">
+                        <p>Select a player to view their stats.</p>
+                    </div>
+                </div>
             </div>
         </div>
-
     </main>
     <footer class="footer">
         <p><strong>FootVis</strong> by Cristiano Nicolau and Miguel Miragaia © 2024<br>Football data and player photos
-            from
-            <a href="https://www.kaggle.com/datasets/vivovinco/20222023-football-player-stats"
-                target="_blank">Kaggle</a>
+            from <a href="https://www.kaggle.com/datasets/vivovinco/20222023-football-player-stats" target="_blank">Kaggle</a>
         </p>
     </footer>
-    <script src="js/search.js"></script>
+    <script src="js/search_compare.js"></script>
 </body>
 
 </html>

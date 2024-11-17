@@ -1,0 +1,125 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f9;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    height: 100vh;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 20px;
+    background-color: #333;
+    color: #fff;
+    width: 100%;
+}
+
+.nav-link {
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+    margin: 0 10px;
+}
+
+.nav-link.active {
+    color: #f0c040;
+}
+
+.navbar-right .logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.compare-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    height: calc(100vh - 100px); /* Leave space for navbar and footer */
+    margin: auto;
+    padding: 20px;
+    box-sizing: border-box;
+    position: relative;
+}
+
+.column {
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.player-card {
+    width: 80%;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.player-card h2 {
+    margin-bottom: 20px;
+}
+
+.search-container {
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.search-input {
+    width: 90%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.suggestions {
+    list-style: none;
+    padding: 0;
+    margin: 10px 0;
+    max-height: 100px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #fff;
+    width: 90%;
+    margin: auto;
+    text-align: left;
+}
+
+.suggestions li {
+    padding: 10px;
+    cursor: pointer;
+}
+
+.suggestions li:hover {
+    background-color: #f0c040;
+}
+
+.player-stats {
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 15px;
+    width: 100%;
+    text-align: left;
+}
+
+.footer {
+    text-align: center;
+    padding: 10px 0;
+    background-color: #333;
+    color: #fff;
+    width: 100%;
+}
