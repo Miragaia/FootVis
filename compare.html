@@ -24,10 +24,13 @@
         </div>
     </nav>
     <main>
+        <div class="compare-button-container">
+            <button id="compareButton" class="compare-button">Compare</button>
+        </div>
         <div id="compare" class="compare-container">
             <!-- Left Column -->
             <div class="column">
-                <div class="player-card">
+                <div class="player-card" id="player1Card">
                     <h2>Player 1</h2>
                     <div class="search-container">
                         <input type="text" id="playerSearch" class="search-input" placeholder="Search Player 1">
@@ -40,7 +43,7 @@
             </div>
             <!-- Right Column -->
             <div class="column">
-                <div class="player-card">
+                <div class="player-card" id="player2Card">
                     <h2>Player 2</h2>
                     <div class="search-container">
                         <input type="text" id="playerSearch2" class="search-input" placeholder="Search Player 2">
@@ -58,7 +61,8 @@
             from <a href="https://www.kaggle.com/datasets/vivovinco/20222023-football-player-stats" target="_blank">Kaggle</a>
         </p>
     </footer>
-    <script src="js/search_compare.js"></script>
+    <script src="js/search.js"></script>
+    <script src="js/compare.js"></script>
 </body>
 
 </html>

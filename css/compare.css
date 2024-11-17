@@ -40,7 +40,7 @@ body {
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    height: calc(100vh - 100px); /* Leave space for navbar and footer */
+    height: calc(100vh - 600px); /* Leave space for navbar and footer */
     margin: auto;
     padding: 20px;
     box-sizing: border-box;
@@ -123,3 +123,24 @@ body {
     color: #fff;
     width: 100%;
 }
+
+.compare-button-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.compare-button {
+  padding: 10px 20px;
+  font-size: 16px;
+  color: #fff;
+  background-color: #007bff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.compare-button:hover {
+  background-color: #0056b3;
+}
+
