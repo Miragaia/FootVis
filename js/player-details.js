@@ -633,6 +633,7 @@ function populatePlayerTable(playerData,allPlayerData) {
     .append("td")
     .style("padding", "5px")
     .style("border", "1px solid #ddd")
+    .style("cursor", "pointer")
     .style("text-align", "left")
     .style("vertical-align", "middle")
     .html(
@@ -643,6 +644,7 @@ function populatePlayerTable(playerData,allPlayerData) {
       .append("td")
       .text(item.per90)
       .style("padding", "5px")
+      .style("cursor", "pointer")
       .style("border", "1px solid #ddd")
       .style("text-align", "center");
 
@@ -651,6 +653,7 @@ function populatePlayerTable(playerData,allPlayerData) {
     const percentileCell = row
       .append("td")
       .style("padding", "5px")
+      .style("cursor", "pointer")
       .style("border", "1px solid #ddd")
       .style("text-align", "center");
 
@@ -667,6 +670,7 @@ function populatePlayerTable(playerData,allPlayerData) {
       .append("div")
       .style("width", barWidth)
       .style("height", "20px")
+      .style("cursor", "pointer")
       .style("background-color", barColor)
       .style("border-radius", "5px")
       .style("display", "inline-block");
@@ -707,83 +711,91 @@ function populatePlayerTable(playerData,allPlayerData) {
         });
     });
   });
+
+    // Função de ordenação da tabela
+    let sortOrder = "asc";
+    function sortTable(column) {
+      const sortedData = data.sort((a, b) => {
+        if (column === "percentile") {
+          const [percentileA] = calculatePercentile(a.dbvalue, a.per90);
+          const [percentileB] = calculatePercentile(b.dbvalue, b.per90);
+          return sortOrder === "asc" ? percentileB - percentileA : percentileA - percentileB;
+        }
+        return sortOrder === "asc" ? (a[column] > b[column] ? 1 : -1) : (a[column] < b[column] ? 1 : -1);
+      });
+  
+  
+      sortOrder = sortOrder === "asc" ? "desc" : "asc";
+  
+      tbody.html("");
+      sortedData.forEach((item) => {
+        const row = tbody.append("tr");
+  
+        row
+          .append("td")
+          .text(item.dbvalue)
+          .style("padding", "5px")
+          .style("border", "1px solid #ddd")
+          .style("cursor", "pointer")
+          .style("text-align", "left");
+  
+        row
+          .append("td")
+          .text(item.per90)
+          .style("padding", "5px")
+          .style("border", "1px solid #ddd")
+          .style("cursor", "pointer")
+          .style("text-align", "center");
+  
+        const [percentileReal, percentileWidth] = calculatePercentile(item.dbvalue, item.per90);
+  
+        const percentileCell = row
+          .append("td")
+          .style("padding", "5px")
+          .style("border", "1px solid #ddd")
+          .style("cursor", "pointer")
+          .style("text-align", "center");
+  
+        percentileCell
+          .append("span")
+          .text(percentileReal)
+          .style("display", "inline-block")
+          .style("margin-right", "5px");
+  
+        const barWidth = percentileWidth + "%";
+        const barColor = getBackgroundColor(percentileReal);
+  
+        percentileCell
+          .append("div")
+          .style("width", barWidth)
+          .style("height", "20px")
+          .style("background-color", barColor)
+          .style("border-radius", "5px")
+          .style("display", "inline-block");
+  
+          row.select("td:first-child")
+          .on("mouseover", function(event) {
+            d3.select("#tooltip4")
+              .style("opacity", 1)
+              .style("cursor", "pointer")
+              .html(
+                `<strong>Metric:</strong> ${item.metric}<br>
+                 <strong>Explanation:</strong> ${item.explain}<br>
+                 <strong>Category:</strong> ${item.type}`
+              )
+              .style("top", (event.pageY + 10) + "px") 
+              .style("left", (event.pageX + 10) + "px");
+          })
+          .on("mouseout", function() {
+            d3.select("#tooltip4").style("opacity", 0);
+          });
+      });
+    }
+  
 }
 
-  // Função de ordenação da tabela
-  let sortOrder = "asc";
-  function sortTable(column) {
-    const sortedData = data.sort((a, b) => {
-      if (column === "percentile") {
-        const [percentileA] = calculatePercentile(a.dbvalue, a.per90);
-        const [percentileB] = calculatePercentile(b.dbvalue, b.per90);
-        return sortOrder === "asc" ? percentileB - percentileA : percentileA - percentileB;
-      }
-      return sortOrder === "asc" ? (a[column] > b[column] ? 1 : -1) : (a[column] < b[column] ? 1 : -1);
-    });
+  
 
-    sortOrder = sortOrder === "asc" ? "desc" : "asc";
-
-    tbody.html("");
-    sortedData.forEach((item) => {
-      const row = tbody.append("tr");
-
-      row
-        .append("td")
-        .text(item.dbvalue)
-        .style("padding", "5px")
-        .style("border", "1px solid #ddd")
-        .style("text-align", "left");
-
-      row
-        .append("td")
-        .text(item.per90)
-        .style("padding", "5px")
-        .style("border", "1px solid #ddd")
-        .style("text-align", "center");
-
-      const [percentileReal, percentileWidth] = calculatePercentile(item.dbvalue, item.per90);
-
-      const percentileCell = row
-        .append("td")
-        .style("padding", "5px")
-        .style("border", "1px solid #ddd")
-        .style("text-align", "center");
-
-      percentileCell
-        .append("span")
-        .text(percentileReal)
-        .style("display", "inline-block")
-        .style("margin-right", "5px");
-
-      const barWidth = percentileWidth + "%";
-      const barColor = getBackgroundColor(percentileReal);
-
-      percentileCell
-        .append("div")
-        .style("width", barWidth)
-        .style("height", "20px")
-        .style("background-color", barColor)
-        .style("border-radius", "5px")
-        .style("display", "inline-block");
-
-        row.select("td:first-child")
-        .on("mouseover", function(event) {
-          d3.select("#tooltip4")
-            .style("opacity", 1)
-            .style("cursor", "pointer")
-            .html(
-              `<strong>Metric:</strong> ${item.metric}<br>
-               <strong>Explanation:</strong> ${item.explain}<br>
-               <strong>Category:</strong> ${item.type}`
-            )
-            .style("top", (event.pageY + 10) + "px") 
-            .style("left", (event.pageX + 10) + "px");
-        })
-        .on("mouseout", function() {
-          d3.select("#tooltip4").style("opacity", 0);
-        });
-    });
-  }
 
 function calculatePercentile(metric, value) {
   const allValues = allPlayerData.map((player) => player[metric]);
