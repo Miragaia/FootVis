@@ -1,40 +1,3 @@
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f9;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    height: 100vh;
-}
-
-.navbar {
-    display: flex;
-    justify-content: space-between;
-    padding: 10px 20px;
-    background-color: #333;
-    color: #fff;
-    width: 100%;
-}
-
-.nav-link {
-    color: #fff;
-    text-decoration: none;
-    font-weight: bold;
-    margin: 0 10px;
-}
-
-.nav-link.active {
-    color: #f0c040;
-}
-
-.navbar-right .logo {
-    font-size: 1.5rem;
-    font-weight: bold;
-}
-
 .compare-container {
     display: flex;
     justify-content: space-between;
@@ -74,7 +37,7 @@ body {
 
 .search-container {
     margin-bottom: 20px;
-    width: 100%;
+    width: 40%;
 }
 
 .search-input {
@@ -113,7 +76,7 @@ body {
     border-radius: 5px;
     padding: 15px;
     width: 100%;
-    text-align: left;
+    text-align: center;
 }
 
 .footer {
