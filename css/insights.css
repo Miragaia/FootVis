@@ -1,11 +1,33 @@
-/* Container geral */
 .container5 {
-  margin: 5px 0 0 5px; /* Margem superior e esquerda */
+  margin: 10px; /* Margem geral */
   display: flex;
-  flex-wrap: wrap; /* Permite que os elementos se ajustem automaticamente */
-  gap: 5px; /* Espaçamento entre as seções */
-  width: calc(100% - 40px); /* Largura total menos as margens */
+  flex-direction: column; /* Organiza as linhas como uma coluna principal */
+  gap: 5px; /* Espaçamento entre as linhas */
+  width: calc(100% - 10px); /* Ajusta para ocupar quase toda a largura */
   box-sizing: border-box;
+}
+
+/* Linha de cima (duas colunas) */
+.container5 > .top-row {
+  display: flex; /* Organiza os gráficos em linha */
+  justify-content: space-between; /* Espaça os elementos uniformemente */
+  gap: 20px; /* Espaçamento entre os gráficos */
+}
+
+/* Cada seção dentro da linha de cima */
+.container5 > .top-row .chart-section {
+  width: calc(50% - 10px); /* Cada seção ocupa metade da largura */
+}
+
+/* Linha de baixo (uma coluna centralizada) */
+.container5 > .bottom-row {
+  display: flex; /* Organiza em linha */
+  justify-content: center; /* Centraliza horizontalmente */
+}
+
+/* Cada seção dentro da linha de baixo */
+.container5 > .bottom-row .chart-section {
+  width: calc(50% - 10px); /* Cada seção ocupa metade da largura */
 }
 
 /* Estilo de cada seção de gráfico */

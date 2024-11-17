@@ -26,35 +26,32 @@
     </div>
   </nav>
   <div class="container5">
-    <!-- Primeira Linha de Gráficos -->
-    <div class="chart-section">
-      <select id="chartSelector">
-        <option value="top-scorers">Top Scorers</option>
-        <option value="assists-leaders">Top Assists</option>
-      </select>
-      <div id="player-stats-chart"></div>
-      <div id="player-stats-chart"></div>
-    </div>
-
+    <!-- Primeira Linha de Gráficos (Duas Colunas) -->
+    <div class="top-row">
+      <div class="chart-section">
+        <select id="chartSelector">
+          <option value="top-scorers">Top Scorers</option>
+          <option value="assists-leaders">Top Assists</option>
+        </select>
+        <div id="player-stats-chart"></div>
+      </div>
   
-    <!-- Segunda Linha de Gráficos -->
-    <div class="chart-section">
-      <div id="pie-stats">
-        <div id="position-buttons-container"></div>
-        <div id="player-pie-chart"></div>
+      <div class="chart-section">
+        <div id="other-stats-chart"></div>
       </div>
     </div>
-
-    <div class="chart-section">
-
-      <div id="other-stats-chart"></div>
-    </div>
-
-    <div class="chart-section">
-      <h2>Other Stats</h2>
-      <div id="other-stats"></div>
+  
+    <!-- Segunda Linha de Gráficos (Uma Coluna Centralizada) -->
+    <div class="bottom-row">
+      <div class="chart-section">
+        <div id="pie-stats">
+          <div id="position-buttons-container"></div>
+          <div id="player-pie-chart"></div>
+        </div>
+      </div>
     </div>
   </div>
+  
   
 
   <footer class="footer">
