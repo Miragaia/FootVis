@@ -107,3 +107,30 @@
   background-color: #0056b3;
 }
 
+/* Two-column table style */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    max-height: 100px !important;
+}
+
+th, td {
+    padding: 2px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+}
+
+/* Set background color based on value (optional) */
+td.percentile-value {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+td.percentile-good {
+    background-color: #d4edda;
+    color: #155724;
+}

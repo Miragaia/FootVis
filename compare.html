@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/compare.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 </head>
@@ -41,7 +42,11 @@
                     <div class="player-stats" id="player1Stats">
                         <p>Select a player to view their stats.</p>
                     </div>
+                    <!-- Table container for Player 1 -->
+                    <!-- <div id="player1TableContainer"></div> -->
+                    <div id="player1ScatterContainer"></div>
                 </div>
+                
             </div>
             <!-- Right Column -->
             <div class="column">
@@ -54,7 +59,11 @@
                     <div class="player-stats" id="player2Stats">
                         <p>Select a player to view their stats.</p>
                     </div>
+                    <!-- Table container for Player 2 -->
+                    <!-- <div id="player2TableContainer"></div> -->
+                    <div id="player2ScatterContainer"></div>
                 </div>
+                
             </div>
         </div>
     </main>
