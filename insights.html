@@ -15,40 +15,47 @@
 <body>
   <nav class="navbar">
     <div class="navbar-left">
-      <a href="./index.html" class="nav-link active">Players</a>
+      <a href="./index.html" class="nav-link ">Players</a>
       <span class="nav-separator">|</span>
       <a href="./compare.html" class="nav-link">Compare</a>
       <span class="nav-separator">|</span>
-      <a href="" class="nav-link">Insights</a>
+      <a href="" class="nav-link active">Insights</a>
     </div>
     <div class="navbar-right">
       <span class="logo">FootVis</span>
     </div>
   </nav>
   <div class="container5">
-
-    <section id="player-stats" class="chart-section">
-
+    <!-- Primeira Linha de Gráficos -->
+    <div class="chart-section">
       <select id="chartSelector">
         <option value="top-scorers">Top Scorers</option>
         <option value="assists-leaders">Top Assists</option>
       </select>
       <div id="player-stats-chart"></div>
-    </section>
+      <div id="player-stats-chart"></div>
+    </div>
 
-    <section id="pie-stats" class="chart-section">
-      <div id="position-buttons-container"></div>
-      <div id="player-pie-chart"></div>
-    </section>
+  
+    <!-- Segunda Linha de Gráficos -->
+    <div class="chart-section">
+      <div id="pie-stats">
+        <div id="position-buttons-container"></div>
+        <div id="player-pie-chart"></div>
+      </div>
+    </div>
 
-    <section id="other-stats" class="chart-section">
+    <div class="chart-section">
 
       <div id="other-stats-chart"></div>
-    </section>
-    <section id="other-stats" class="chart-section">
+    </div>
 
-    </section>
+    <div class="chart-section">
+      <h2>Other Stats</h2>
+      <div id="other-stats"></div>
+    </div>
   </div>
+  
 
   <footer class="footer">
     <p><strong>FootVis</strong> by Cristiano Nicolau and Miguel Miragaia © 2024<br>Football data and player photos

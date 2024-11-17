@@ -139,7 +139,7 @@ function displayOtherStatsChart() {
 
   console.log("Other Stats:", otherStats);
 
-  const margin = { top: 40, right: 30, bottom: 40, left: 40 }; // Ajustado o topo para incluir o título
+  const margin = { top: 40, right: 30, bottom: 40, left: 60 }; // Ajustado o topo para incluir o título
   const width = 750 - margin.left - margin.right;
   const height = 350 - margin.top - margin.bottom;
 
@@ -272,7 +272,7 @@ function displayPositionDonutChart() {
 
   const color = d3.scaleOrdinal()
     .domain(data.map(d => d.position))
-    .range(d3.quantize(t => d3.interpolateSpectral(t * 0.8 + 0.1), data.length).reverse());
+    .range(d3.quantize(t => d3.interpolateSpectral(t * 0.8 + 0.1), data.length));
 
   const svg = d3.select("#player-pie-chart")
     .append("svg")

@@ -1,83 +1,111 @@
+/* Container geral */
 .container5 {
-  margin: 5px 5px 5px 5px; /* Combina as margens em uma única linha: top, right, bottom, left */
-  display: grid;
-    grid-template-columns: repeat(2, 1fr); /* Duas colunas de largura igual */
-    grid-template-rows: repeat(2, 1fr); /* Duas linhas de altura igual */
-  width: calc(100% - 30px); /* Ajusta a largura com base nas margens */
-  gap: 5px; /* Espaçamento entre os quadrados */
-
-  box-sizing: border-box; /* Garante que padding e bordas sejam incluídos no tamanho total */
-}
-
-.chart-section {
-  background-color: #f0f0f0; /* Cor de fundo para visualização */
+  margin: 5px 0 0 5px; /* Margem superior e esquerda */
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  border: 1px solid #ccc; /* Borda para diferenciar os quadrados */
+  flex-wrap: wrap; /* Permite que os elementos se ajustem automaticamente */
+  gap: 5px; /* Espaçamento entre as seções */
+  width: calc(100% - 40px); /* Largura total menos as margens */
   box-sizing: border-box;
 }
-#other-stats {
+
+/* Estilo de cada seção de gráfico */
+.chart-section {
+  background-color: #f9f9f9; /* Cor de fundo suave */
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  justify-content: center; /* Alinha os gráficos no centro verticalmente */
+  align-items: center; /* Alinha os gráficos no centro horizontalmente */
+  border: 1px solid #ddd; /* Borda discreta */
+  border-radius: 8px; /* Bordas arredondadas */
+  box-sizing: border-box;
+  width: calc(50% - 10px); /* Cada seção ocupa metade da largura (2 colunas) */
+  padding: 10px; /* Espaçamento interno */
+
+}
+
+/* Título do gráfico */
+.chart-section h2 {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 15px;
+  color: #333; /* Cor escura para o título */
+}
+
+/* Configurações do gráfico de pie */
+#pie-stats {
+  display: flex;
+  flex-direction: row;
+  justify-content: center !important; /* Alinha os gráficos no centro horizontalmente */  
   align-items: center;
 }
-#player-stats {
+
+/* Estilo do botão de filtro de posições */
+#position-buttons-container {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-top: -15px;
+}
+
+/* Estilo dos botões de posição */
+.position-button {
+  cursor: pointer;
+  display: flex;
   align-items: center;
-
+  margin: 8px 0;
+  transition: background-color 0.3s ease;
 }
 
-#chartSelector {
-  z-index: 99;
-  margin-left: auto; /* Empurra o select para o final */
-  margin-top: 35px; /* Adiciona margem extra ao topo */
-  margin-right: 20px; /* Adiciona margem extra à direita */
+.position-button:hover {
+  background-color: #f0f0f0; /* Efeito de hover nos botões */
 }
 
-#player-stats-chart
-{
+.position-button input {
+  margin-right: 10px;
+  accent-color: #6aaa96; /* Cor do input de checkbox */
+}
+
+.position-button span {
+  display: inline-block;
   margin-left: 10px;
-  margin-top: -50px;
+  font-size: 14px;
+  color: #444;
+}
+
+/* Estilo para os gráficos de barras */
+#player-stats-chart,
+#other-stats-chart,
+#player-pie-chart {
   width: 100%;
   height: 100%;
 }
 
+/* Estilos para o gráfico de stats */
+#chartSelector {
+  z-index: 99;
+  margin-left: auto;
+  margin-right: 20px;
+  padding: 8px 15px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #fff;
+  cursor: pointer;
+}
+
+/* Tooltip personalizada */
 .tooltip {
   position: absolute;
   visibility: hidden;
   background-color: #333;
   color: #fff;
-  padding: 5px;
+  padding: 8px 12px;
   border-radius: 5px;
-  font-size: 12px;
+  font-size: 14px;
   pointer-events: none;
+  max-width: 200px; /* Para garantir que a tooltip não fique muito larga */
 }
 
-#pie-stats {
-    display: flex; 
-    flex-direction: row;
-    align-items:center;
-      
-}
-
-#position-buttons-container {
-  margin-left: 20px;
-}
-
-.position-button {
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  margin: 5px 0;
-}
-
-.position-button input {
-  margin-right: 10px;
-}
-
-#other-stats {
-  margin-top: -40px;
+svg {
+  overflow: visible;
 }
