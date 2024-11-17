@@ -23,14 +23,18 @@ function displayPlayerStats(playerName, statsId, scatterId) {
   const player = playerData.find(row => row.Player === playerName);
   const statsContainer = document.getElementById(statsId);
 
-  createScatterPlot(player, playerData, `${scatterId}`);
+  // createScatterPlot(player, playerData, `${scatterId}`);
 
   //ativar e resolver bugs
-  // populatePlayerTable(player, playerData, statsId);
+  populatePlayerTable(player, playerData, statsId);
 
   if (player) {
     statsContainer.innerHTML = `
       <p><strong>Player:</strong> ${player.Player}</p>
+      <p><strong>Nation:</strong> ${player.Nation}</p>
+      <p><strong>Position:</strong> ${player.Position}</p>
+      <p><strong>Age:</strong> ${player.Age}</p>
+      <p><strong>Competition:</strong> ${player.Comp}</p>
       <p><strong>Team:</strong> ${player.Squad}</p>
       <p><strong>Goals:</strong> ${player.Goals}</p>
       <p><strong>Assists:</strong> ${player.Assists}</p>
@@ -252,8 +256,8 @@ function calculatePercentile(value, allValues) {
 }
 
 function createScatterPlot(playerData, allPlayerData, containerId) {
+  console.log("Creating scatter plot for", playerData.Tkl, playerData.TklWon);
 
-  console.log(containerId);
   // Set dimensions for the scatter plot
   const margin = { top: 20, right: 20, bottom: 40, left: 40 };
   const width = 400 - margin.left - margin.right;
@@ -271,16 +275,9 @@ function createScatterPlot(playerData, allPlayerData, containerId) {
     .append("g")
     .attr("transform", `translate(${margin.left},${margin.top})`);
 
-  // Create scales
-  const xScale = d3
-    .scaleLinear()
-    .domain([0, d3.max(allPlayerData, (d) => d.Tkl)])
-    .range([0, width]);
-
-  const yScale = d3
-    .scaleLinear()
-    .domain([0, d3.max(allPlayerData, (d) => d.TklWon)])
-    .range([height, 0]);
+  // Create scales with fixed domains
+  const xScale = d3.scaleLinear().domain([0, 10]).range([0, width]);
+  const yScale = d3.scaleLinear().domain([0, 100]).range([height, 0]);
 
   // Add axes
   svg
@@ -324,6 +321,7 @@ function createScatterPlot(playerData, allPlayerData, containerId) {
     .attr("r", 6)
     .style("fill", "red");
 }
+
 
 
 
