@@ -8,7 +8,8 @@ function loadPlayers() {
     header: true,
     complete: (results) => {
       playerData = results.data;
-      players = results.data.map(row => row.Player);   
+      players = results.data.map(row => row.Player);  
+      
     },
     error: (error) => {
       console.error("Error loading CSV:", error);
@@ -27,8 +28,8 @@ function displayPlayerStats(playerName, statsId, scatterId) {
 
   //ativar e resolver bugs
   populatePlayerTable(player, playerData, statsId);
-  renderRadarChart(playerData, '#radarChart1');
-  renderRadarChart(playerData, '#radarChart2');
+  // renderRadarChart(player, playerData, '#radarChart1');
+  // renderRadarChart(player, playerData, '#radarChart2');
 
   if (player) {
     statsContainer.innerHTML = `
@@ -63,6 +64,8 @@ document.getElementById('compareButton').addEventListener('click', () => {
   displayPlayerStats(selectedPlayer2, 'player2Stats', 'player2ScatterContainer');
   searchPlayer(selectedPlayer1, 'playerImage');
   searchPlayer(selectedPlayer2, 'playerImage2'); 
+  getPlayerMetrics(selectedPlayer1, '#radarChart1');
+  getPlayerMetrics(selectedPlayer2, '#radarChart2');
 });
 
 function populatePlayerTable(playerData, allPlayerData, playerId) {
@@ -337,6 +340,8 @@ function searchPlayer(playerName, imageId) {
       const playerImage = document.getElementById(imageId);
       playerImage.src = player;
       playerImage.alt = playerName + " image";
+
+      playerImage.closest('.player-image-container').style.display = 'block';
     })
     .catch((error) => {
       console.error("Error fetching player data:", error);
@@ -344,86 +349,125 @@ function searchPlayer(playerName, imageId) {
       const playerImage = document.getElementById(imageId);
       playerImage.src = "./assets/no-image-available.jpg";
       playerImage.alt = "No image available";
+
+      playerImage.closest('.player-image-container').style.display = 'block';
     });
 }
 
-function renderRadarChart(playerData, radarId) {
-  const width = 500;
-  const height = 500;
-  const margin = { top: 50, right: 50, bottom: 50, left: 50 };
-  const radius = Math.min(width, height) / 2 - margin.top;
+function calculatePercentileForRadar(metric, value) {
+  const allValues = playerData.map((player) => player[metric]);
+
+  allValues.sort((a, b) => a - b);
+
+  const rank = allValues.indexOf(value) + 1;
+
+  const percentile = (rank / allValues.length) * 100;
+
+  return Math.round(percentile);
+}
+
+function getPlayerMetrics(playerName, radarId) {
+  const playerInMet = playerData.find(row => row.Player === playerName);
+  console.log("Getting metrics for player", playerInMet);
+  const data = [
+    { axis: "Shots/90", value: calculatePercentileForRadar("Shots/90", playerInMet["Shots/90"]), category: "Attacking", metric: "Shots", explain: "Shots per 90 minutes" },
+    { axis: "SoT/90", value: calculatePercentileForRadar("SoT/90", playerInMet["SoT/90"]), category: "Attacking", metric: "Shots on Target", explain: "Shots on Target per 90 minutes" },
+    { axis: "Goals/90", value: calculatePercentileForRadar("Goals/90", playerInMet["Goals/90"]), category: "Attacking", metric: "Goals", explain: "Goals per 90 minutes" },
+    { axis: "Assists/90", value: calculatePercentileForRadar("Assists/90", playerInMet["Assists/90"]), category: "Attacking", metric: "Assists", explain: "Assists per 90 minutes" },
+    { axis: "SCA", value: calculatePercentileForRadar("SCA", playerInMet["SCA"]), category: "Attacking", metric: "Shot Creating Actions", explain: "Shot Creating Actions per 90 minutes" },
+    { axis: "Int/90", value: calculatePercentileForRadar("Int/90", playerInMet["Int/90"]), category: "Defending", metric: "Interceptions", explain: "Interceptions per 90 minutes" },
+    { axis: "TklWon/90", value: calculatePercentileForRadar("TklWon/90", playerInMet["TklWon/90"]), category: "Defending", metric: "Tackles Won", explain: "Tackles Won per 90 minutes" },
+    { axis: "Recov/90", value: calculatePercentileForRadar("Recov/90", playerInMet["Recov/90"]), category: "Defending", metric: "Recoveries", explain: "Recoveries per 90 minutes" },
+    { axis: "Fls/90", value: calculatePercentileForRadar("Fls/90", playerInMet["Fls/90"]), category: "Defending", metric: "Fouls", explain: "Fouls per 90 minutes" },
+    { axis: "Clr", value: calculatePercentileForRadar("Clr", playerInMet["Clr"]), category: "Defending", metric: "Clearances", explain: "Clearances per 90 minutes" },
+    { axis: "PasTotAtt", value: calculatePercentileForRadar("PasTotAtt", playerInMet["PasTotAtt"]), category: "Possession", metric: "Passes Attempted", explain: "Passes Attempted per 90 minutes" },
+    { axis: "PasTotCmp%", value: calculatePercentileForRadar("PasTotCmp%", playerInMet["PasTotCmp%"]), category: "Possession", metric: "Pass Completion %", explain: "Pass Completion % per 90 minutes" },
+    { axis: "ToSuc", value: calculatePercentileForRadar("ToSuc", playerInMet["ToSuc"]), category: "Possession", metric: "Take-Ons Successful", explain: "Dribbling Defender Successful per 90 minutes" }
+  ];
+  
+  // renderHeatmap(playerData);
+  renderRadarChart(data, radarId);
+}
+
+
+function renderRadarChart(playerDataRadar, radarId) {
+  const width = 400;  
+  const height = 400; 
+  const outerWidth = 520; 
+  const outerHeight = 500; 
+  const innerRadius = 0;
+  const outerRadius = Math.min(width, height) / 2;
+
+  console.log("Rendering radar chart for", playerDataRadar);
 
   const svg = d3
     .select(radarId)
     .append("svg")
-    .attr("width", width)
-    .attr("height", height)
+    .attr("width", outerWidth)
+    .attr("height", outerHeight)
     .append("g")
-    .attr("transform", `translate(${width / 2}, ${height / 2})`);
+    .attr("transform", `translate(${outerWidth / 2}, ${outerHeight / 2})`); 
 
-  const allAxis = playerData[0].metrics.map((i) => i.axis); // Metric names from playerData
-  const angleSlice = (2 * Math.PI) / allAxis.length; // Angle between each metric
+  // Extract axis names and values from playerData
+  const allMetrics = playerDataRadar.map((d) => d.axis);
+  const values = playerDataRadar.map((d) => d.value);
+  console.log(values);
+
+  // Define the angle between each axis
+  const angleSlice = (2 * Math.PI) / allMetrics.length;
+
+  // Create a scale for the radius based on the percentile values
+  const rScale = d3.scaleLinear().range([innerRadius, outerRadius]).domain([0, 100]); // Assuming values range from 0 to 100
   
-  // Calculate percentiles for each axis
-  const percentiles = playerData[0].metrics.map((metric) => {
-    console.log(metric);
-    return calculatePercentile(metric.axis, metric.value);
-  });
-
-  // Define scale for the radius (based on percentiles)
-  const rScale = d3.scaleLinear().range([0, radius]).domain([0, 100]);  // Domain from 0 to 100 for percentiles
-
-  // Draw concentric circles for background
+  // Draw the background concentric circles
   const levels = 5;
   for (let i = 0; i < levels; i++) {
     svg
       .append("circle")
       .attr("cx", 0)
       .attr("cy", 0)
-      .attr("r", (radius / levels) * (i + 1))
+      .attr("r", (outerRadius / levels) * (i + 1))
       .style("fill", "#CDCDCD")
       .style("stroke", "#CDCDCD")
       .style("fill-opacity", 0.1);
   }
 
-  // Draw axes for each metric
-  allAxis.forEach((axis, i) => {
+  // Draw axes and axis labels
+  allMetrics.forEach((axis, i) => {
     const angle = i * angleSlice;
 
-    // Draw the line for each axis
+    // Draw axis lines
     svg
       .append("line")
       .attr("x1", 0)
       .attr("y1", 0)
-      .attr("x2", radius * Math.cos(angle))
-      .attr("y2", radius * Math.sin(angle))
+      .attr("x2", outerRadius * Math.cos(angle))
+      .attr("y2", outerRadius * Math.sin(angle))
       .style("stroke", "#CDCDCD")
       .style("stroke-width", "1px");
 
-    // Add the axis labels (metric names)
+    // Add axis labels (metric names)
     svg
       .append("text")
-      .attr("x", (radius + 10) * Math.cos(angle))
-      .attr("y", (radius + 10) * Math.sin(angle))
+      .attr("x", (outerRadius + 10) * Math.cos(angle))
+      .attr("y", (outerRadius + 10) * Math.sin(angle))
       .attr("dy", "0.35em")
       .style("font-size", "11px")
       .style("text-anchor", "middle")
       .text(axis);
   });
 
+  // Define the radar line function to draw the chart area
   const radarLine = d3
     .lineRadial()
-    .radius((d) => rScale(d.percentile)) // Use percentile value for scaling
+    .radius((d) => rScale(d.value))  // Use the value for scaling
     .angle((d, i) => i * angleSlice)
     .curve(d3.curveLinearClosed);
 
-  // Draw the radar chart area using percentiles
+  // Draw the radar chart area (the filled area representing the metrics)
   svg
     .append("path")
-    .datum(playerData[0].metrics.map((metric, i) => ({
-      axis: metric.axis,
-      percentile: percentiles[i]  // Use percentile values here
-    })))
+    .datum(playerDataRadar)  // Use the playerData as the input
     .attr("d", radarLine)
     .style("fill", "#66bb6a")
     .style("fill-opacity", 0.5)
@@ -431,10 +475,10 @@ function renderRadarChart(playerData, radarId) {
     .style("stroke-width", 2);
 
   // Draw the data points (percentiles) on the radar chart
-  playerData[0].metrics.forEach((d, i) => {
+  playerDataRadar.forEach((metric, i) => {
     const angle = i * angleSlice;
-    const x = rScale(percentiles[i]) * Math.cos(angle - Math.PI / 2);
-    const y = rScale(percentiles[i]) * Math.sin(angle - Math.PI / 2);
+    const x = rScale(metric.value) * Math.cos(angle - Math.PI / 2);
+    const y = rScale(metric.value) * Math.sin(angle - Math.PI / 2);
 
     svg
       .append("circle")
@@ -446,8 +490,3 @@ function renderRadarChart(playerData, radarId) {
       .style("stroke-width", 1.5);
   });
 }
-
-
-
-
-

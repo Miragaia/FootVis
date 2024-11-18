@@ -159,8 +159,11 @@ td.percentile-good {
     flex: 0 0 200px; /* Define a largura da div */
     margin-top: 10px;
     margin-left: 20px;
+    display: none;
 
 }
+
+
 
 .player-image-container img {
     width: 200px; /* Define the width of the player image */
