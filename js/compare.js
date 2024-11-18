@@ -27,6 +27,8 @@ function displayPlayerStats(playerName, statsId, scatterId) {
 
   //ativar e resolver bugs
   populatePlayerTable(player, playerData, statsId);
+  renderRadarChart(playerData, '#radarChart1');
+  renderRadarChart(playerData, '#radarChart2');
 
   if (player) {
     statsContainer.innerHTML = `
@@ -59,6 +61,8 @@ document.getElementById('compareButton').addEventListener('click', () => {
 
   displayPlayerStats(selectedPlayer1, 'player1Stats', 'player1ScatterContainer');
   displayPlayerStats(selectedPlayer2, 'player2Stats', 'player2ScatterContainer');
+  searchPlayer(selectedPlayer1, 'playerImage');
+  searchPlayer(selectedPlayer2, 'playerImage2'); 
 });
 
 function populatePlayerTable(playerData, allPlayerData, playerId) {
@@ -320,6 +324,127 @@ function createScatterPlot(playerData, allPlayerData, containerId) {
     .attr("cy", yScale(playerData.TklWon))
     .attr("r", 6)
     .style("fill", "red");
+}
+
+function searchPlayer(playerName, imageId) {
+  playerName = playerName.replace(" ", "_");
+  const url = `https://www.thesportsdb.com/api/v1/json/3/searchplayers.php?p=${playerName}`;
+  console.log(url);
+  fetch(url)
+    .then((response) => response.json())
+    .then((data) => {
+      const player = data.player[0].strCutout;
+      const playerImage = document.getElementById(imageId);
+      playerImage.src = player;
+      playerImage.alt = playerName + " image";
+    })
+    .catch((error) => {
+      console.error("Error fetching player data:", error);
+      // quando da erro na busca do jogador, exibe o quadrado cinza, a dizer no meio "No image available"
+      const playerImage = document.getElementById(imageId);
+      playerImage.src = "./assets/no-image-available.jpg";
+      playerImage.alt = "No image available";
+    });
+}
+
+function renderRadarChart(playerData, radarId) {
+  const width = 500;
+  const height = 500;
+  const margin = { top: 50, right: 50, bottom: 50, left: 50 };
+  const radius = Math.min(width, height) / 2 - margin.top;
+
+  const svg = d3
+    .select(radarId)
+    .append("svg")
+    .attr("width", width)
+    .attr("height", height)
+    .append("g")
+    .attr("transform", `translate(${width / 2}, ${height / 2})`);
+
+  const allAxis = playerData[0].metrics.map((i) => i.axis); // Metric names from playerData
+  const angleSlice = (2 * Math.PI) / allAxis.length; // Angle between each metric
+  
+  // Calculate percentiles for each axis
+  const percentiles = playerData[0].metrics.map((metric) => {
+    console.log(metric);
+    return calculatePercentile(metric.axis, metric.value);
+  });
+
+  // Define scale for the radius (based on percentiles)
+  const rScale = d3.scaleLinear().range([0, radius]).domain([0, 100]);  // Domain from 0 to 100 for percentiles
+
+  // Draw concentric circles for background
+  const levels = 5;
+  for (let i = 0; i < levels; i++) {
+    svg
+      .append("circle")
+      .attr("cx", 0)
+      .attr("cy", 0)
+      .attr("r", (radius / levels) * (i + 1))
+      .style("fill", "#CDCDCD")
+      .style("stroke", "#CDCDCD")
+      .style("fill-opacity", 0.1);
+  }
+
+  // Draw axes for each metric
+  allAxis.forEach((axis, i) => {
+    const angle = i * angleSlice;
+
+    // Draw the line for each axis
+    svg
+      .append("line")
+      .attr("x1", 0)
+      .attr("y1", 0)
+      .attr("x2", radius * Math.cos(angle))
+      .attr("y2", radius * Math.sin(angle))
+      .style("stroke", "#CDCDCD")
+      .style("stroke-width", "1px");
+
+    // Add the axis labels (metric names)
+    svg
+      .append("text")
+      .attr("x", (radius + 10) * Math.cos(angle))
+      .attr("y", (radius + 10) * Math.sin(angle))
+      .attr("dy", "0.35em")
+      .style("font-size", "11px")
+      .style("text-anchor", "middle")
+      .text(axis);
+  });
+
+  const radarLine = d3
+    .lineRadial()
+    .radius((d) => rScale(d.percentile)) // Use percentile value for scaling
+    .angle((d, i) => i * angleSlice)
+    .curve(d3.curveLinearClosed);
+
+  // Draw the radar chart area using percentiles
+  svg
+    .append("path")
+    .datum(playerData[0].metrics.map((metric, i) => ({
+      axis: metric.axis,
+      percentile: percentiles[i]  // Use percentile values here
+    })))
+    .attr("d", radarLine)
+    .style("fill", "#66bb6a")
+    .style("fill-opacity", 0.5)
+    .style("stroke", "#66bb6a")
+    .style("stroke-width", 2);
+
+  // Draw the data points (percentiles) on the radar chart
+  playerData[0].metrics.forEach((d, i) => {
+    const angle = i * angleSlice;
+    const x = rScale(percentiles[i]) * Math.cos(angle - Math.PI / 2);
+    const y = rScale(percentiles[i]) * Math.sin(angle - Math.PI / 2);
+
+    svg
+      .append("circle")
+      .attr("cx", x)
+      .attr("cy", y)
+      .attr("r", 4)
+      .style("fill", "#66bb6a")
+      .style("stroke", "#fff")
+      .style("stroke-width", 1.5);
+  });
 }
 
 

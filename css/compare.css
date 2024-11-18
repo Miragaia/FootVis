@@ -1,13 +1,11 @@
 .compare-container {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start; /* Align columns at the top */
     width: 100%;
-    height: calc(100vh - 600px); /* Leave space for navbar and footer */
     margin: auto;
     padding: 20px;
     box-sizing: border-box;
-    position: relative;
     margin-top: 100px;
 }
 
@@ -15,7 +13,7 @@
     width: 50%;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start; /* Align cards at the top */
     position: relative;
 }
 
@@ -30,11 +28,39 @@
     align-items: center;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
     text-align: center;
+    position: relative; /* Ensure proper stacking */
+    margin-bottom: 20px; /* Add spacing between cards and page bottom */
 }
 
 .player-card h2 {
     margin-bottom: 20px;
 }
+
+body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden; /* Prevent horizontal scrolling */
+    font-family: Arial, sans-serif;
+}
+
+html, body {
+    height: 100%; /* Ensure page height adjusts to content */
+}
+
+main {
+    width: 100%;
+    min-height: 100%; /* Allow main content to expand the page height */
+}
+
+.player-stats {
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 15px;
+    width: 100%;
+    text-align: center;
+}
+
 
 .search-container {
     margin-bottom: 20px;
@@ -71,14 +97,7 @@
     background-color: #f0c040;
 }
 
-.player-stats {
-    background: #f9f9f9;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    padding: 15px;
-    width: 100%;
-    text-align: center;
-}
+
 
 .footer {
     text-align: center;
@@ -134,4 +153,26 @@ td.percentile-value {
 td.percentile-good {
     background-color: #d4edda;
     color: #155724;
+}
+
+.player-image-container {
+    flex: 0 0 200px; /* Define a largura da div */
+    margin-top: 10px;
+    margin-left: 20px;
+
+}
+
+.player-image-container img {
+    width: 200px; /* Define the width of the player image */
+    height: auto;
+    border: 1px solid #ccc;
+    border-radius: 10px; /* Optional: add rounded corners */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.player-image-container img:hover {
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    transform: scale(1.05);
+    cursor: pointer;
 }
