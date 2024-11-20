@@ -59,8 +59,7 @@ document.getElementById('compareButton').addEventListener('click', () => {
   displayPlayerStats(selectedPlayer2, 'player2Stats', 'player2ScatterContainer');
   searchPlayer(selectedPlayer1, 'playerImage');
   searchPlayer(selectedPlayer2, 'playerImage2'); 
-  getPlayerMetrics(selectedPlayer1, '#radarChart1');
-  getPlayerMetrics(selectedPlayer2, '#radarChart2');
+  getPlayerMetrics(selectedPlayer1, selectedPlayer2, '#radarChart');
 });
 
 
@@ -194,38 +193,67 @@ function calculatePercentileForRadar(metric, value) {
   return Math.round(percentile);
 }
 
-function getPlayerMetrics(playerName, radarId) {
-  const playerInMet = playerData.find(row => row.Player === playerName);
-  console.log("Getting metrics for player", playerInMet);
-  const data = [
-    { axis: "Shots/90", value: calculatePercentileForRadar("Shots/90", playerInMet["Shots/90"]), category: "Attacking", metric: "Shots", explain: "Shots per 90 minutes" },
-    { axis: "SoT/90", value: calculatePercentileForRadar("SoT/90", playerInMet["SoT/90"]), category: "Attacking", metric: "Shots on Target", explain: "Shots on Target per 90 minutes" },
-    { axis: "Goals/90", value: calculatePercentileForRadar("Goals/90", playerInMet["Goals/90"]), category: "Attacking", metric: "Goals", explain: "Goals per 90 minutes" },
-    { axis: "Assists/90", value: calculatePercentileForRadar("Assists/90", playerInMet["Assists/90"]), category: "Attacking", metric: "Assists", explain: "Assists per 90 minutes" },
-    { axis: "SCA", value: calculatePercentileForRadar("SCA", playerInMet["SCA"]), category: "Attacking", metric: "Shot Creating Actions", explain: "Shot Creating Actions per 90 minutes" },
-    { axis: "Int/90", value: calculatePercentileForRadar("Int/90", playerInMet["Int/90"]), category: "Defending", metric: "Interceptions", explain: "Interceptions per 90 minutes" },
-    { axis: "TklWon/90", value: calculatePercentileForRadar("TklWon/90", playerInMet["TklWon/90"]), category: "Defending", metric: "Tackles Won", explain: "Tackles Won per 90 minutes" },
-    { axis: "Recov/90", value: calculatePercentileForRadar("Recov/90", playerInMet["Recov/90"]), category: "Defending", metric: "Recoveries", explain: "Recoveries per 90 minutes" },
-    { axis: "Fls/90", value: calculatePercentileForRadar("Fls/90", playerInMet["Fls/90"]), category: "Defending", metric: "Fouls", explain: "Fouls per 90 minutes" },
-    { axis: "Clr", value: calculatePercentileForRadar("Clr", playerInMet["Clr"]), category: "Defending", metric: "Clearances", explain: "Clearances per 90 minutes" },
-    { axis: "PasTotAtt", value: calculatePercentileForRadar("PasTotAtt", playerInMet["PasTotAtt"]), category: "Possession", metric: "Passes Attempted", explain: "Passes Attempted per 90 minutes" },
-    { axis: "PasTotCmp%", value: calculatePercentileForRadar("PasTotCmp%", playerInMet["PasTotCmp%"]), category: "Possession", metric: "Pass Completion %", explain: "Pass Completion % per 90 minutes" },
-    { axis: "ToSuc", value: calculatePercentileForRadar("ToSuc", playerInMet["ToSuc"]), category: "Possession", metric: "Take-Ons Successful", explain: "Dribbling Defender Successful per 90 minutes" }
+function getPlayerMetrics(playerName1, playerName2, radarId) {
+  // Get metrics for the first player
+  const player1Metrics = playerData.find(row => row.Player === playerName1);
+  console.log("Getting metrics for player 1:", playerName1, player1Metrics);
+
+  const player1Data = [
+    { axis: "Shots/90", value: calculatePercentileForRadar("Shots/90", player1Metrics["Shots/90"]), category: "Attacking", player: playerName1 },
+    { axis: "SoT/90", value: calculatePercentileForRadar("SoT/90", player1Metrics["SoT/90"]), category: "Attacking", player: playerName1 },
+    { axis: "Goals/90", value: calculatePercentileForRadar("Goals/90", player1Metrics["Goals/90"]), category: "Attacking", player: playerName1 },
+    { axis: "Assists/90", value: calculatePercentileForRadar("Assists/90", player1Metrics["Assists/90"]), category: "Attacking", player: playerName1 },
+    { axis: "SCA", value: calculatePercentileForRadar("SCA", player1Metrics["SCA"]), category: "Attacking", player: playerName1 },
+    { axis: "Int/90", value: calculatePercentileForRadar("Int/90", player1Metrics["Int/90"]), category: "Defending", player: playerName1 },
+    { axis: "TklWon/90", value: calculatePercentileForRadar("TklWon/90", player1Metrics["TklWon/90"]), category: "Defending", player: playerName1 },
+    { axis: "Recov/90", value: calculatePercentileForRadar("Recov/90", player1Metrics["Recov/90"]), category: "Defending", player: playerName1 },
+    { axis: "Fls/90", value: calculatePercentileForRadar("Fls/90", player1Metrics["Fls/90"]), category: "Defending", player: playerName1 },
+    { axis: "Clr", value: calculatePercentileForRadar("Clr", player1Metrics["Clr"]), category: "Defending", player: playerName1 },
+    { axis: "PasTotAtt", value: calculatePercentileForRadar("PasTotAtt", player1Metrics["PasTotAtt"]), category: "Possession", player: playerName1 },
+    { axis: "PasTotCmp%", value: calculatePercentileForRadar("PasTotCmp%", player1Metrics["PasTotCmp%"]), category: "Possession", player: playerName1 },
+    { axis: "ToSuc", value: calculatePercentileForRadar("ToSuc", player1Metrics["ToSuc"]), category: "Possession", player: playerName1 }
   ];
-  
-  renderRadarChart(data, radarId);
+
+  // Get metrics for the second player
+  const player2Metrics = playerData.find(row => row.Player === playerName2);
+  console.log("Getting metrics for player 2:", playerName2, player2Metrics);
+
+  const player2Data = [
+    { axis: "Shots/90", value: calculatePercentileForRadar("Shots/90", player2Metrics["Shots/90"]), category: "Attacking", player: playerName2 },
+    { axis: "SoT/90", value: calculatePercentileForRadar("SoT/90", player2Metrics["SoT/90"]), category: "Attacking", player: playerName2 },
+    { axis: "Goals/90", value: calculatePercentileForRadar("Goals/90", player2Metrics["Goals/90"]), category: "Attacking", player: playerName2 },
+    { axis: "Assists/90", value: calculatePercentileForRadar("Assists/90", player2Metrics["Assists/90"]), category: "Attacking", player: playerName2 },
+    { axis: "SCA", value: calculatePercentileForRadar("SCA", player2Metrics["SCA"]), category: "Attacking", player: playerName2 },
+    { axis: "Int/90", value: calculatePercentileForRadar("Int/90", player2Metrics["Int/90"]), category: "Defending", player: playerName2 },
+    { axis: "TklWon/90", value: calculatePercentileForRadar("TklWon/90", player2Metrics["TklWon/90"]), category: "Defending", player: playerName2 },
+    { axis: "Recov/90", value: calculatePercentileForRadar("Recov/90", player2Metrics["Recov/90"]), category: "Defending", player: playerName2 },
+    { axis: "Fls/90", value: calculatePercentileForRadar("Fls/90", player2Metrics["Fls/90"]), category: "Defending", player: playerName2 },
+    { axis: "Clr", value: calculatePercentileForRadar("Clr", player2Metrics["Clr"]), category: "Defending", player: playerName2 },
+    { axis: "PasTotAtt", value: calculatePercentileForRadar("PasTotAtt", player2Metrics["PasTotAtt"]), category: "Possession", player: playerName2 },
+    { axis: "PasTotCmp%", value: calculatePercentileForRadar("PasTotCmp%", player2Metrics["PasTotCmp%"]), category: "Possession", player: playerName2 },
+    { axis: "ToSuc", value: calculatePercentileForRadar("ToSuc", player2Metrics["ToSuc"]), category: "Possession", player: playerName2 }
+  ];
+
+  // Combine data for both players
+  const combinedData = [player1Data, player2Data];
+
+  // Render radar chart with combined data
+  renderRadarChart(combinedData, radarId);
 }
 
 
 function renderRadarChart(playerDataRadar, radarId) {
-  const width = 400;  
-  const height = 400; 
-  const outerWidth = 520; 
-  const outerHeight = 500; 
+  const width = 400;
+  const height = 400;
+  const outerWidth = 520;
+  const outerHeight = 500;
   const innerRadius = 0;
   const outerRadius = Math.min(width, height) / 2;
 
   console.log("Rendering radar chart for", playerDataRadar);
+
+  // Clear the previous chart if it exists
+  d3.select(radarId).select("svg").remove();
 
   const svg = d3
     .select(radarId)
@@ -233,19 +261,15 @@ function renderRadarChart(playerDataRadar, radarId) {
     .attr("width", outerWidth)
     .attr("height", outerHeight)
     .append("g")
-    .attr("transform", `translate(${outerWidth / 2}, ${outerHeight / 2})`); 
+    .attr("transform", `translate(${outerWidth / 2}, ${outerHeight / 2})`);
 
-  // Extract axis names and values from playerData
-  const allMetrics = playerDataRadar.map((d) => d.axis);
-  const values = playerDataRadar.map((d) => d.value);
-  console.log(values);
-
-  // Define the angle between each axis
+  // Get the unique axes (metrics) from the first player's data
+  const allMetrics = playerDataRadar[0].map((d) => d.axis);
   const angleSlice = (2 * Math.PI) / allMetrics.length;
 
-  // Create a scale for the radius based on the percentile values
-  const rScale = d3.scaleLinear().range([innerRadius, outerRadius]).domain([0, 100]); // Assuming values range from 0 to 100
-  
+  // Create a scale for the radius
+  const rScale = d3.scaleLinear().range([innerRadius, outerRadius]).domain([0, 100]);
+
   // Draw the background concentric circles
   const levels = 5;
   for (let i = 0; i < levels; i++) {
@@ -259,11 +283,10 @@ function renderRadarChart(playerDataRadar, radarId) {
       .style("fill-opacity", 0.1);
   }
 
-  // Draw axes and axis labels
+  // Draw the axes and labels
   allMetrics.forEach((axis, i) => {
     const angle = i * angleSlice - Math.PI / 2;
 
-    // Draw axis lines
     svg
       .append("line")
       .attr("x1", 0)
@@ -273,7 +296,6 @@ function renderRadarChart(playerDataRadar, radarId) {
       .style("stroke", "#CDCDCD")
       .style("stroke-width", "1px");
 
-    // Add axis labels (metric names)
     svg
       .append("text")
       .attr("x", (outerRadius + 10) * Math.cos(angle))
@@ -284,36 +306,64 @@ function renderRadarChart(playerDataRadar, radarId) {
       .text(axis);
   });
 
-  // Define the radar line function to draw the chart area
+  // Define the radar line function
   const radarLine = d3
     .lineRadial()
-    .radius((d) => rScale(d.value))  // Use the value for scaling
+    .radius((d) => rScale(d.value))
     .angle((d, i) => i * angleSlice)
     .curve(d3.curveLinearClosed);
 
-  // Draw the radar chart area (the filled area representing the metrics)
-  svg
-    .append("path")
-    .datum(playerDataRadar)  // Use the playerData as the input
-    .attr("d", radarLine)
-    .style("fill", "#66bb6a")
-    .style("fill-opacity", 0.5)
-    .style("stroke", "#66bb6a")
-    .style("stroke-width", 2);
+  // Define colors for players
+  const colors = ["#66bb6a", "#1f77b4", "#ff7f0e"]; // Extend for more players
 
-  // Draw the data points (percentiles) on the radar chart
-  playerDataRadar.forEach((metric, i) => {
-    const angle = i * angleSlice;
-    const x = rScale(metric.value) * Math.cos(angle - Math.PI / 2);
-    const y = rScale(metric.value) * Math.sin(angle - Math.PI / 2);
-
+  // Draw radar areas and points for each player
+  playerDataRadar.forEach((playerData, index) => {
+    // Draw the radar area
     svg
-      .append("circle")
-      .attr("cx", x)
-      .attr("cy", y)
-      .attr("r", 4)
-      .style("fill", "#66bb6a")
-      .style("stroke", "#fff")
-      .style("stroke-width", 1.5);
+      .append("path")
+      .datum(playerData)
+      .attr("d", radarLine)
+      .style("fill", colors[index])
+      .style("fill-opacity", 0.5)
+      .style("stroke", colors[index])
+      .style("stroke-width", 2);
+
+    // Draw data points
+    playerData.forEach((metric, i) => {
+      const angle = i * angleSlice;
+      const x = rScale(metric.value) * Math.cos(angle - Math.PI / 2);
+      const y = rScale(metric.value) * Math.sin(angle - Math.PI / 2);
+
+      svg
+        .append("circle")
+        .attr("cx", x)
+        .attr("cy", y)
+        .attr("r", 4)
+        .style("fill", colors[index])
+        .style("stroke", "#fff")
+        .style("stroke-width", 1.5);
+    });
+  });
+
+  // Add legend
+  const legend = svg
+    .append("g")
+    .attr("transform", `translate(-${outerWidth / 2 - 20}, -${outerHeight / 2 - 20})`);
+
+  playerDataRadar.forEach((_, index) => {
+    legend
+      .append("rect")
+      .attr("x", 0)
+      .attr("y", index * 20)
+      .attr("width", 10)
+      .attr("height", 10)
+      .style("fill", colors[index]);
+
+    legend
+      .append("text")
+      .attr("x", 15)
+      .attr("y", index * 20 + 9)
+      .style("font-size", "12px")
+      .text(`Player ${index + 1}`);
   });
 }
