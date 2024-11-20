@@ -1,67 +1,58 @@
 .container5 {
-  margin: 10px; /* Margem geral */
-  display: flex;
-  flex-direction: column; /* Organiza as linhas como uma coluna principal */
-  gap: 5px; /* Espaçamento entre as linhas */
-  width: calc(100% - 10px); /* Ajusta para ocupar quase toda a largura */
-  box-sizing: border-box;
-}
-
-/* Linha de cima (duas colunas) */
-.container5 > .top-row {
-  display: flex; /* Organiza os gráficos em linha */
-  justify-content: space-between; /* Espaça os elementos uniformemente */
-  gap: 20px; /* Espaçamento entre os gráficos */
-}
-
-/* Cada seção dentro da linha de cima */
-.container5 > .top-row .chart-section {
-  width: calc(50% - 10px); /* Cada seção ocupa metade da largura */
-}
-
-/* Linha de baixo (uma coluna centralizada) */
-.container5 > .bottom-row {
-  display: flex; /* Organiza em linha */
-  justify-content: center; /* Centraliza horizontalmente */
-}
-
-/* Cada seção dentro da linha de baixo */
-.container5 > .bottom-row .chart-section {
-  width: calc(50% - 10px); /* Cada seção ocupa metade da largura */
-}
-
-/* Estilo de cada seção de gráfico */
-.chart-section {
-  background-color: #f9f9f9; /* Cor de fundo suave */
+  margin: 10px;
   display: flex;
   flex-direction: column;
-  justify-content: center; /* Alinha os gráficos no centro verticalmente */
-  align-items: center; /* Alinha os gráficos no centro horizontalmente */
-  border: 1px solid #ddd; /* Borda discreta */
-  border-radius: 8px; /* Bordas arredondadas */
+  gap: 5px;
+  width: calc(100% - 10px);
   box-sizing: border-box;
-  width: calc(50% - 10px); /* Cada seção ocupa metade da largura (2 colunas) */
-  padding: 10px; /* Espaçamento interno */
-
 }
 
-/* Título do gráfico */
+.container5 > .top-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.container5 > .top-row .chart-section {
+  width: calc(50% - 10px);
+}
+
+.container5 > .bottom-row {
+  display: flex;
+  justify-content: center;
+}
+
+.container5 > .bottom-row .chart-section {
+  width: calc(50% - 10px);
+}
+
+.chart-section {
+  background-color: #f9f9f9;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-sizing: border-box;
+  width: calc(50% - 10px);
+  padding: 10px;
+}
+
 .chart-section h2 {
   font-size: 18px;
   font-weight: bold;
   margin-bottom: 15px;
-  color: #333; /* Cor escura para o título */
+  color: #333;
 }
 
-/* Configurações do gráfico de pie */
 #pie-stats {
   display: flex;
   flex-direction: row;
-  justify-content: center !important; /* Alinha os gráficos no centro horizontalmente */  
+  justify-content: center !important;
   align-items: center;
 }
 
-/* Estilo do botão de filtro de posições */
 #position-buttons-container {
   display: flex;
   flex-direction: column;
@@ -69,7 +60,6 @@
   margin-top: -15px;
 }
 
-/* Estilo dos botões de posição */
 .position-button {
   cursor: pointer;
   display: flex;
@@ -79,12 +69,12 @@
 }
 
 .position-button:hover {
-  background-color: #f0f0f0; /* Efeito de hover nos botões */
+  background-color: #f0f0f0;
 }
 
 .position-button input {
   margin-right: 10px;
-  accent-color: #6aaa96; /* Cor do input de checkbox */
+  accent-color: #6aaa96;
 }
 
 .position-button span {
@@ -94,7 +84,6 @@
   color: #444;
 }
 
-/* Estilo para os gráficos de barras */
 #player-stats-chart,
 #other-stats-chart,
 #player-pie-chart {
@@ -102,7 +91,6 @@
   height: 100%;
 }
 
-/* Estilos para o gráfico de stats */
 #chartSelector {
   z-index: 99;
   margin-left: auto;
@@ -115,7 +103,6 @@
   cursor: pointer;
 }
 
-/* Tooltip personalizada */
 .tooltip {
   position: absolute;
   visibility: hidden;
@@ -125,7 +112,7 @@
   border-radius: 5px;
   font-size: 14px;
   pointer-events: none;
-  max-width: 200px; /* Para garantir que a tooltip não fique muito larga */
+  max-width: 200px;
 }
 
 svg {
