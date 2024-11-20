@@ -26,11 +26,6 @@ function displayPlayerStats(playerName, statsId, scatterId) {
 
   // createScatterPlot(player, playerData, `${scatterId}`);
 
-  //ativar e resolver bugs
-  populatePlayerTable(player, playerData, statsId);
-  // renderRadarChart(player, playerData, '#radarChart1');
-  // renderRadarChart(player, playerData, '#radarChart2');
-
   if (player) {
     statsContainer.innerHTML = `
       <p><strong>Player:</strong> ${player.Player}</p>
@@ -68,173 +63,6 @@ document.getElementById('compareButton').addEventListener('click', () => {
   getPlayerMetrics(selectedPlayer2, '#radarChart2');
 });
 
-function populatePlayerTable(playerData, allPlayerData, playerId) {
-  const statValues = calculateStats(playerData, allPlayerData);
-
-  // Determine which player's table to update based on playerId
-  const tableContainerId = playerId === 'player1' ? '#player1TableContainer' : '#player2TableContainer';
-  console.log("Updating table for player", playerId);
-
-  d3.select(tableContainerId).html(""); // Clear any existing table
-
-  const table = d3
-    .select(tableContainerId)
-    .append("table")
-    .style("border-collapse", "collapse")
-    .style("width", "100%");
-
-  const data = [
-    {
-      dbvalue: "Shots/90",
-      type: "Attacking",
-      metric: "Shots",
-      per90: playerData["Shots/90"],
-      explain: "Shots per 90 minutes",
-    },
-    {
-      dbvalue: "SoT/90",
-      type: "Attacking",
-      metric: "Shots on Target",
-      per90: playerData["SoT/90"],
-      explain: "Shots on Target per 90 minutes",
-    },
-    {
-      dbvalue: "Goals/90",
-      type: "Attacking",
-      metric: "Goals",
-      per90: playerData["Goals/90"],
-      explain: "Goals per 90 minutes",
-    },
-    {
-      dbvalue: "Assists/90",
-      type: "Attacking",
-      metric: "Assists",
-      per90: playerData["Assists/90"],
-      explain: "Assists per 90 minutes",
-    },
-    {
-      dbvalue: "SCA",
-      type: "Attacking",
-      metric: "Shot Creating Actions",
-      per90: playerData["SCA"],
-      explain: "Shot Creating Actions per 90 minutes",
-    },
-    {
-      dbvalue: "Int/90",
-      type: "Defending",
-      metric: "Interceptions",
-      per90: playerData["Int/90"],
-      explain: "Interceptions per 90 minutes",
-    },
-    {
-      dbvalue: "TklWon/90",
-      type: "Defending",
-      metric: "Tackles Won",
-      per90: playerData["TklWon/90"],
-      explain: "Tackles Won per 90 minutes",
-    },
-    {
-      dbvalue: "Recov/90",
-      type: "Defending",
-      metric: "Recoveries",
-      per90: playerData["Recov/90"],
-      explain: "Recoveries per 90 minutes",
-    },
-    {
-      dbvalue: "Fls/90",
-      type: "Defending",
-      metric: "Fouls",
-      per90: playerData["Fls/90"],
-      explain: "Fouls per 90 minutes",
-    },
-    {
-      dbvalue: "Clr",
-      type: "Defending",
-      metric: "Clearances",
-      per90: playerData["Clr"],
-      explain: "Clearances per 90 minutes",
-    },
-    {
-      dbvalue: "PasTotAtt",
-      type: "Possession",
-      metric: "Passes Attempted",
-      per90: playerData["PasTotAtt"],
-      explain: "Passes Attempted per 90 minutes",
-    },
-    {
-      dbvalue: "PasTotCmp%",
-      type: "Possession",
-      metric: "Pass Completion %",
-      per90: playerData["PasTotCmp%"],
-      explain: "Pass Completion % per 90 minutes",
-    },
-    {
-      dbvalue: "ToSuc",
-      type: "Possession",
-      metric: "Take-Ons Successful",
-      per90: playerData["ToSuc"],
-      explain: "Dribbling defender Successful per 90 minutes",
-    },
-  ];
-
-  // Create table headers
-  const header = table.append("thead").append("tr");
-  header
-    .append("th")
-    .text("Statistic")
-    .style("padding", "8px")
-    .style("border", "1px solid #ddd")
-    .style("width", "30%")
-    .style("text-align", "center")
-    .style("background-color", "#f4f4f4")
-    .style("cursor", "pointer")
-    .on("click", () => sortTable("metric"));
-
-  header
-    .append("th")
-    .text("Per 90")
-    .style("width", "20%")
-    .style("text-align", "center")
-    .style("padding", "8px")
-    .style("border", "1px solid #ddd")
-    .style("background-color", "#f4f4f4")
-    .style("cursor", "pointer")
-    .on("click", () => sortTable("per90"));
-
-  header
-    .append("th")
-    .text("Percentile")
-    .style("text-align", "center")
-    .style("padding", "8px")
-    .style("border", "1px solid #ddd")
-    .style("background-color", "#f4f4f4")
-    .style("cursor", "pointer")
-    .on("click", () => sortTable("percentile"));
-
-  // Append data rows to the table
-  const rows = table.append("tbody").selectAll("tr").data(data).enter().append("tr");
-
-  rows
-    .append("td")
-    .text((d) => d.metric)
-    .style("padding", "8px")
-    .style("border", "1px solid #ddd")
-    .style("text-align", "center");
-
-  rows
-    .append("td")
-    .text((d) => d.per90)
-    .style("padding", "8px")
-    .style("border", "1px solid #ddd")
-    .style("text-align", "center");
-
-  rows
-    .append("td")
-    .text((d) => statValues[d.dbvalue])
-    .style("padding", "8px")
-    .style("border", "1px solid #ddd")
-    .style("text-align", "center");
-}
 
 // Calculate Percentile for the player
 function calculateStats(playerData, allPlayerData) {
@@ -385,7 +213,6 @@ function getPlayerMetrics(playerName, radarId) {
     { axis: "ToSuc", value: calculatePercentileForRadar("ToSuc", playerInMet["ToSuc"]), category: "Possession", metric: "Take-Ons Successful", explain: "Dribbling Defender Successful per 90 minutes" }
   ];
   
-  // renderHeatmap(playerData);
   renderRadarChart(data, radarId);
 }
 
@@ -434,7 +261,7 @@ function renderRadarChart(playerDataRadar, radarId) {
 
   // Draw axes and axis labels
   allMetrics.forEach((axis, i) => {
-    const angle = i * angleSlice;
+    const angle = i * angleSlice - Math.PI / 2;
 
     // Draw axis lines
     svg
