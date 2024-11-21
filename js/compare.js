@@ -94,7 +94,7 @@ function createScatterPlot(playerName1, playerName2, allPlayerData, containerId)
   const player2Metrics = allPlayerData.find((row) => row.Player === playerName2);
 
   // Set dimensions for the scatter plot
-  const margin = { top: 20, right: 20, bottom: 40, left: 40 };
+  const margin = { top: 20, right: 100, bottom: 40, left: 40 }; // Added space for legend
   const width = 400 - margin.left - margin.right;
   const height = 300 - margin.top - margin.bottom;
 
@@ -111,7 +111,7 @@ function createScatterPlot(playerName1, playerName2, allPlayerData, containerId)
     .attr("transform", `translate(${margin.left},${margin.top})`);
 
   // Create scales with fixed domains
-  const xScale = d3.scaleLinear().domain([0, 10]).range([0, width]);
+  const xScale = d3.scaleLinear().domain([0, 20]).range([0, width]);
   const yScale = d3.scaleLinear().domain([0, 100]).range([height, 0]);
 
   // Add axes
@@ -121,7 +121,7 @@ function createScatterPlot(playerName1, playerName2, allPlayerData, containerId)
     .call(d3.axisBottom(xScale));
   svg.append("g").call(d3.axisLeft(yScale));
 
-  // Add labels
+  // Add labels for axes
   svg
     .append("text")
     .attr("x", width / 2)
@@ -157,8 +157,7 @@ function createScatterPlot(playerName1, playerName2, allPlayerData, containerId)
       .attr("r", 6)
       .style("fill", "red")
       .style("stroke", "black")
-      .style("stroke-width", 1.5)
-      .attr("class", "highlight");
+      .style("stroke-width", 1.5);
   }
 
   // Highlight Player 2's point in blue
@@ -170,10 +169,44 @@ function createScatterPlot(playerName1, playerName2, allPlayerData, containerId)
       .attr("r", 6)
       .style("fill", "blue")
       .style("stroke", "black")
-      .style("stroke-width", 1.5)
-      .attr("class", "highlight");
+      .style("stroke-width", 1.5);
   }
+
+  // Add legend
+  const legend = svg.append("g").attr("transform", `translate(${width + 20}, 20)`);
+
+  // Player 1 Legend
+  legend
+    .append("circle")
+    .attr("cx", 0)
+    .attr("cy", 0)
+    .attr("r", 6)
+    .style("fill", "red");
+
+  legend
+    .append("text")
+    .attr("x", 15)
+    .attr("y", 5)
+    .style("font-size", "12px")
+    .text(playerName1);
+
+  // Player 2 Legend
+  legend
+    .append("circle")
+    .attr("cx", 0)
+    .attr("cy", 20)
+    .attr("r", 6)
+    .style("fill", "blue");
+
+  legend
+    .append("text")
+    .attr("x", 15)
+    .attr("y", 25)
+    .style("font-size", "12px")
+    .text(playerName2);
 }
+
+
 
 
 function searchPlayer(playerName, imageId) {
