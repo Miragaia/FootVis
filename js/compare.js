@@ -93,8 +93,12 @@ function createScatterPlot(playerName1, playerName2, allPlayerData, containerId)
   const player1Metrics = allPlayerData.find((row) => row.Player === playerName1);
   const player2Metrics = allPlayerData.find((row) => row.Player === playerName2);
 
-  // Set dimensions for the scatter plot
-  const margin = { top: 20, right: 100, bottom: 40, left: 40 }; // Added space for legend
+  // Get the minimum and maximum Tkl (Tackles) values of both players
+  const minTkl = Math.min(player1Metrics.Tkl, player2Metrics.Tkl);
+  const maxTkl = Math.max(player1Metrics.Tkl, player2Metrics.Tkl);
+
+  // Set margins and dimensions
+  const margin = { top: 20, right: 100, bottom: 40, left: 40 };
   const width = 400 - margin.left - margin.right;
   const height = 300 - margin.top - margin.bottom;
 
@@ -110,8 +114,12 @@ function createScatterPlot(playerName1, playerName2, allPlayerData, containerId)
     .append("g")
     .attr("transform", `translate(${margin.left},${margin.top})`);
 
-  // Create scales with fixed domains
-  const xScale = d3.scaleLinear().domain([0, 20]).range([0, width]);
+  // Adjust the domain for xScale to zoom into the players' values with padding
+  const padding = 2;  // Padding to zoom around the player values
+  const xScale = d3.scaleLinear()
+    .domain([Math.max(0, minTkl - padding), maxTkl + padding])  // Ensure minimum value is 0
+    .range([0, width]);
+
   const yScale = d3.scaleLinear().domain([0, 100]).range([height, 0]);
 
   // Add axes
@@ -119,6 +127,7 @@ function createScatterPlot(playerName1, playerName2, allPlayerData, containerId)
     .append("g")
     .attr("transform", `translate(0,${height})`)
     .call(d3.axisBottom(xScale));
+
   svg.append("g").call(d3.axisLeft(yScale));
 
   // Add labels for axes
@@ -205,7 +214,6 @@ function createScatterPlot(playerName1, playerName2, allPlayerData, containerId)
     .style("font-size", "12px")
     .text(playerName2);
 }
-
 
 
 
