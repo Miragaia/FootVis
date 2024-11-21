@@ -20,11 +20,9 @@ function loadPlayers() {
 
 loadPlayers();
 
-function displayPlayerStats(playerName, statsId, scatterId) {
+function displayPlayerStats(playerName, statsId) {
   const player = playerData.find(row => row.Player === playerName);
   const statsContainer = document.getElementById(statsId);
-
-  // createScatterPlot(player, playerData, `${scatterId}`);
 
   if (player) {
     statsContainer.innerHTML = `
@@ -55,11 +53,12 @@ document.getElementById('compareButton').addEventListener('click', () => {
   selectedPlayer1 = player1Input;
   selectedPlayer2 = player2Input;
 
-  displayPlayerStats(selectedPlayer1, 'player1Stats', 'player1ScatterContainer');
-  displayPlayerStats(selectedPlayer2, 'player2Stats', 'player2ScatterContainer');
+  displayPlayerStats(selectedPlayer1, 'player1Stats');
+  displayPlayerStats(selectedPlayer2, 'player2Stats');
   searchPlayer(selectedPlayer1, 'playerImage');
   searchPlayer(selectedPlayer2, 'playerImage2'); 
   getPlayerMetrics(selectedPlayer1, selectedPlayer2, '#radarChart');
+  createScatterPlot(selectedPlayer1, selectedPlayer2, playerData, 'scatterChart');
 });
 
 
@@ -89,8 +88,10 @@ function calculatePercentile(value, allValues) {
   return percentile.toFixed(2) + "%";
 }
 
-function createScatterPlot(playerData, allPlayerData, containerId) {
-  console.log("Creating scatter plot for", playerData.Tkl, playerData.TklWon);
+function createScatterPlot(playerName1, playerName2, allPlayerData, containerId) {
+  // Extract data for the two players
+  const player1Metrics = allPlayerData.find((row) => row.Player === playerName1);
+  const player2Metrics = allPlayerData.find((row) => row.Player === playerName2);
 
   // Set dimensions for the scatter plot
   const margin = { top: 20, right: 20, bottom: 40, left: 40 };
@@ -147,14 +148,33 @@ function createScatterPlot(playerData, allPlayerData, containerId) {
     .attr("r", 4)
     .style("fill", "gray");
 
-  // Highlight the selected player's point in red
-  svg
-    .append("circle")
-    .attr("cx", xScale(playerData.Tkl))
-    .attr("cy", yScale(playerData.TklWon))
-    .attr("r", 6)
-    .style("fill", "red");
+  // Highlight Player 1's point in red
+  if (player1Metrics) {
+    svg
+      .append("circle")
+      .attr("cx", xScale(player1Metrics.Tkl))
+      .attr("cy", yScale(player1Metrics.TklWon))
+      .attr("r", 6)
+      .style("fill", "red")
+      .style("stroke", "black")
+      .style("stroke-width", 1.5)
+      .attr("class", "highlight");
+  }
+
+  // Highlight Player 2's point in blue
+  if (player2Metrics) {
+    svg
+      .append("circle")
+      .attr("cx", xScale(player2Metrics.Tkl))
+      .attr("cy", yScale(player2Metrics.TklWon))
+      .attr("r", 6)
+      .style("fill", "blue")
+      .style("stroke", "black")
+      .style("stroke-width", 1.5)
+      .attr("class", "highlight");
+  }
 }
+
 
 function searchPlayer(playerName, imageId) {
   playerName = playerName.replace(" ", "_");
