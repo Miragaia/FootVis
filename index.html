@@ -13,6 +13,9 @@
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.14.1/themes/base/jquery-ui.css">
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
     <script src="https://code.jquery.com/ui/1.14.1/jquery-ui.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.js.iife.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.css" />
 </head>
 
 <body>
@@ -72,7 +75,7 @@
                 </div>
                 <div class="filter-age-range">
                     <div class="slider-container">
-                    <strong><label for="age">Age Range:</label></strong>
+                        <strong><label for="age">Age Range:</label></strong>
                         <input type="text" id="age" readonly style="border:0; color:#f6931f; font-weight:bold;">
                         <div id="slider-range"></div>
                     </div>
@@ -94,14 +97,14 @@
                 </div>
                 <div class="filter-age-range">
                     <div class="slider-container">
-                    <strong><label for="goals">Goals:</label></strong>
+                        <strong><label for="goals">Goals:</label></strong>
                         <input type="text" id="goals" readonly style="border:0; color:#f6931f; font-weight:bold;">
                         <div id="slider-range1"></div>
                     </div>
                 </div>
                 <div class="filter-age-range">
                     <div class="slider-container">
-                    <strong><label for="assists">Assists:</label></strong>
+                        <strong><label for="assists">Assists:</label></strong>
                         <input type="text" id="assists" readonly style="border:0; color:#f6931f; font-weight:bold;">
                         <div id="slider-range2"></div>
                     </div>
@@ -153,6 +156,141 @@
     </footer>
     <script src="js/nav.js"></script>
     <script src="js/table.js"></script>
+    <script>
+
+        function startTour() {
+            const driver = window.driver.js.driver;
+            const driverObj = driver({
+                animate: false,
+                showProgress: true,
+                showButtons: ['next', 'previous', 'close'],
+                allowClose: true,
+                steps: [
+                    {
+                        element: '#playerFilterSearch',
+                        popover: {
+                            title: 'Search Players',
+                            description: 'Search players by name, nationality, or team.',
+                            side: 'top'
+                        }
+                    },
+                    {
+                        element: '#slider-range',
+                        popover: {
+                            title: 'Age Filter',
+                            description: 'Use this slider to select an age range.',
+                            side: 'top'
+                        }
+                    },
+                    {
+                        element: '#competition-checkboxes',
+                        popover: {
+                            title: 'Competition Filter',
+                            description: 'Select the competitions you want to view.',
+                            side: 'top'
+                        }
+                    },
+                    {
+                        element: '#position-checkboxes',
+                        popover: {
+                            title: 'Position Filter',
+                            description: 'Select the positions you want to view.',
+                            side: 'top'
+                        }
+                    },
+                    {
+                        element: '#cards-checkboxes',
+                        popover: {
+                            title: 'Cards Filter',
+                            description: 'Select the cards you want to view.',
+                            side: 'top'
+                        }
+                    },
+                    {
+                        element: '#slider-range1',
+                        popover: {
+                            title: 'Goals Filter',
+                            description: 'Use this slider to select a range of goals.',
+                            side: 'top'
+                        }
+                    },
+                    {
+                        element: '#slider-range2',
+                        popover: {
+                            title: 'Assists Filter',
+                            description: 'Use this slider to select a range of assists.',
+                            side: 'top'
+                        }
+                    },
+                    {
+                        element: '#playersTable',
+                        popover: {
+                            title: 'Players Table',
+                            description: 'Here you can find detailed statistics about the players. \n The table is interactive and allows you to sort the data. \n Click on a player to view more detailed statistics.',
+                            side: 'top'
+                        }
+                    },
+                    {
+                        element: '.tabs',
+                        popover: {
+                            title: 'Tabs',
+                            description: 'Click on the tabs to view different sets of statistics.',
+                            side: 'top'
+                        }
+                    },
+                    {
+                        element: '#clear-filters-btn',
+                        popover: {
+                            title: 'Clear Filters',
+                            description: 'Click here to remove all applied filters.',
+                            side: 'top'
+                        }
+                    },
+                    {
+                        element: '#infoButton',
+                        popover: {
+                            title: 'Help',
+                            description: 'Click here for more information about the table columns.',
+                            side: 'left'
+                        }
+                    }
+                ]
+
+            });
+
+            driverObj.drive();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const tourButton = document.createElement('button');
+            tourButton.textContent = '?';
+            tourButton.id = 'tourButton';
+            tourButton.style.cssText = `
+                position: fixed;
+                bottom: 80px;
+                right: 50px;
+                z-index: 99999;
+                background: #007bff;
+                color: #fff;
+                border: none;
+                width: 50px;
+                height: 50px;
+                border-radius: 50%;
+                cursor: pointer;
+                font-size: 18px;
+                font-weight: bold;
+                transition: transform 0.2s;
+            `;
+            tourButton.onmouseover = () => {
+                tourButton.style.background = '#ffa500';
+            };
+            tourButton.onmouseout = () => {
+                tourButton.style.background = '#007bff';
+            };
+            tourButton.onclick = startTour;
+            document.body.appendChild(tourButton);
+        });
+    </script>
 </body>
 
 </html>

@@ -20,9 +20,9 @@ function displayPlayerStatsChart(chartType) {
   const chartContainer = d3.select("#player-stats-chart");
   chartContainer.html(""); // Limpa o gráfico existente antes de desenhar outro
 
-  const margin = { top: 40, right: 30, bottom: 50, left: 60 };
+  const margin = { top: 40, right: 30, bottom: 40, left: 60 };
   const width = 750 - margin.left - margin.right;
-  const height = 350 - margin.top - margin.bottom;
+  const height = 330 - margin.top - margin.bottom;
 
   const data =
     chartType === "top-scorers"
@@ -141,7 +141,7 @@ function displayOtherStatsChart() {
 
   const margin = { top: 40, right: 30, bottom: 40, left: 60 }; // Ajustado o topo para incluir o título
   const width = 750 - margin.left - margin.right;
-  const height = 350 - margin.top - margin.bottom;
+  const height = 330 - margin.top - margin.bottom;
 
   const svg = d3.select("#other-stats-chart")
     .append("svg")
@@ -265,7 +265,7 @@ function displayPositionDonutChart() {
   const totalPlayers = d3.sum(data, d => d.count); // Total de jogadores
 
   const width = 400;
-  const height = 350;
+  const height = 330;
   const margin = 40;
 
   const radius = Math.min(width, height) / 2 - margin;

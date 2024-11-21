@@ -215,7 +215,7 @@ function playerPosition(player) {
 function drawCharts(player) {
   const pieData = [
     { label: "Minutes Played", value: player.Min },
-    { label: "Minutes on Bench", value: player.MinutesOnBench },
+    { label: "Minutes Not Played", value: player.MinutesOnBench },
   ];
 
   drawPieChart(pieData, player.MaxPossibleMinutes);
