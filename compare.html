@@ -11,6 +11,9 @@
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.js.iife.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.css" />
 </head>
 
 <body>
@@ -27,57 +30,224 @@
         </div>
     </nav>
     <main>
-        <div class="compare-button-container">
-            <button id="compareButton" class="compare-button">Compare</button>
-        </div>
+
         <div id="compare" class="compare-container">
-            <!-- Left Column -->
-            <div class="column">
-                <div class="player-card" id="player1Card">
-                    <h2>Player 1</h2>
-                    <div class="search-container">
-                        <input type="text" id="playerSearch" class="search-input" placeholder="Search Player 1">
-                        <ul id="suggestions" class="suggestions"></ul>
-                    </div>
-                    <div class="player-image-container">
-                        <img id="playerImage" src="images/player.png" alt="Player Image 1">
+            <div class="compare-item left">
+                <div class="stats-container">
+                    <div class="player-container">
+                        <h2 class="p1">Player 1</h2>
+                        <div class="search-container">
+                            <input type="text" id="playerSearch" class="search-input" placeholder="Search Player 1">
+                            <ul id="suggestions" class="suggestions"></ul>
+                        </div>
                     </div>
                     <div class="player-stats" id="player1Stats">
                         <p>Select a player to view their stats.</p>
                     </div>
                 </div>
-                
+                <div class="player-image-container">
+                    <img id="playerImage" src="images/player.png" alt="Player Image 1">
+                </div>
+
             </div>
-            <!-- Right Column -->
-            <div class="column">
-                <div class="player-card" id="player2Card">
-                    <h2>Player 2</h2>
-                    <div class="search-container">
-                        <input type="text" id="playerSearch2" class="search-input" placeholder="Search Player 2">
-                        <ul id="suggestions2" class="suggestions"></ul>
+            <div class="compare-button-container">
+                <button id="compareButton" class="compare-button">Compare</button>
+            </div>
+            <div class="compare-item right">
+                <div class="stats-container">
+                    <div class="player-container reverse">
+                        <h2 class="p2">Player 2</h2>
+                        <div class="search-container">
+                            <input type="text" id="playerSearch2" class="search-input" placeholder="Search Player 2">
+                            <ul id="suggestions2" class="suggestions reverse"></ul>
+                        </div>
                     </div>
-                    <div class="player-image-container">
-                        <img id="playerImage2" src="images/player.png" alt="Player Image 2">
-                    </div>
-                    <div class="player-stats" id="player2Stats">
+                    <div class="player-stats reverse" id="player2Stats">
                         <p>Select a player to view their stats.</p>
                     </div>
                 </div>
-                
+                <div class="player-image-container">
+                    <img id="playerImage2" src="images/player.png" alt="Player Image 2">
+                </div>
             </div>
         </div>
-        <div id="compareGraphics" class="compare-graphics">
-            <div id="scatterChart"></div>
-            <div id="radarChart"></div> 
+
+        <hr>
+        <div class="flex-container">
+
+            <div class="card">
+                <div id="radarChart"></div>
+                <div class="button-group">
+                    <button id="filter-attacking">Attacking</button>
+                    <button id="filter-defending">Defending</button>
+                    <button id="filter-possession">Possession</button>
+                    <button id="filter-all" class="active">All</button>
+                </div>
+            </div>
+
+
+            <div class="card">
+
+                <div id="barChart">
+                    <select id="chartType">
+                        <option value="goals">Goals</option>
+                        <option value="assists">Assists</option>
+                        <option value="combined">Goals + Assists</option>
+                    </select>
+                    <div id="barChartContainer"></div>
+                    <div class="tooltip"></div>
+
+                </div>
+            </div>
+
+            <div class="card">
+                <div id="scatterChart">
+                    <div id="scatter-controls">
+                        <select id="comparison-select">
+                            <option value="aerials_vs_aerialsWon">Aerials vs Aerials Won</option>
+                            <option value="toAtt_vs_toSuc">Dribles Attempts vs Success</option>
+                            <option value="pasTotCmp_vs_pasTotAtt">Passes Attempted vs Completed</option>
+                            <option value="tackles_vs_tacklesWon">Tackles vs Tackles Won</option>
+                        </select>
+                    </div>
+                    <div id="scatterChartContainer"></div>
+                </div>
+            </div>
+
         </div>
     </main>
     <footer class="footer">
-        <p><strong>FootVis</strong> by Cristiano Nicolau and Miguel Miragaia © 2024<br>Football data and player photos
-            from <a href="https://www.kaggle.com/datasets/vivovinco/20222023-football-player-stats" target="_blank">Kaggle</a>
+        <p><strong>FootVis</strong> by Cristiano Nicolau and Miguel Miragaia © 2024<br>Football data from <a
+                href="https://www.kaggle.com/datasets/vivovinco/20222023-football-player-stats"
+                target="_blank">Kaggle</a> and player photos
+            from <a href="https://www.thesportsdb.com/" target="_blank">thesportsdb</a>
         </p>
     </footer>
     <script src="js/search_compare.js"></script>
     <script src="js/compare.js"></script>
+    <script>
+        function startTour() {
+            const driver = window.driver.js.driver;
+
+            if (selectedPlayer1 === null || selectedPlayer2 === null) {
+                const driverObj = driver({
+                    animate: false,
+                    showProgress: true,
+                    showButtons: ['next', 'previous', 'close'],
+                    allowClose: true,
+                    steps: [
+                        {
+                            element: '#playerSearch',
+                            popover: {
+                                title: 'Search Player 1',
+                                description: 'Search for a player to compare.',
+                                side: 'top'
+                            }
+                        },
+                        {
+                            element: '#playerSearch2',
+                            popover: {
+                                title: 'Search Player 2',
+                                description: 'Search for a player to compare.',
+                                side: 'top'
+                            }
+                        },
+                        {
+                            element: '#compareButton',
+                            popover: {
+                                title: 'Compare Button',
+                                description: 'Click here to compare the selected players.',
+                                side: 'top'
+                            }
+                        }
+                    ]
+                });
+                driverObj.drive();
+            } else {
+                const driverObj = driver({
+                    animate: false,
+                    showProgress: true,
+                    showButtons: ['next', 'previous', 'close'],
+                    allowClose: true,
+                    steps: [
+                        {
+                            element: '.compare-item.left',
+                            popover: {
+                                title: 'Player 1',
+                                description: 'This is the info of your first player selected.',
+                                side: 'top'
+                            }
+                        },
+                        {
+                            element: '.compare-item.right',
+                            popover: {
+                                title: 'Player 2',
+                                description: 'This is the info of your second player selected.',
+                                side: 'top'
+                            }
+                        },
+                        {
+                            element: '#radarChart',
+                            popover: {
+                                title: 'Radar Chart',
+                                description: 'This chart shows the comparison between the selected players in different categories.',
+                                side: 'top'
+                            }
+                        },
+                        {
+                            element: '#barChart',
+                            popover: {
+                                title: 'Bar Chart',
+                                description: 'This chart shows the comparison between the selected players in goals, assists, or both.',
+                                side: 'top'
+                            }
+                        },
+                        {
+                            element: '#scatterChart',
+                            popover: {
+                                title: 'Scatter Chart',
+                                description: 'This chart shows the comparison between the selected players in different categories.',
+                                side: 'top'
+                            }
+                        }
+                    ]
+                });
+                driverObj.drive();
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const tourButton = document.createElement('button');
+            tourButton.textContent = '?';
+            tourButton.id = 'tourButton';
+            tourButton.style.cssText = `
+                position: fixed;
+                bottom: 80px;
+                right: 50px;
+                z-index: 99999;
+                background: #007bff;
+                color: #fff;
+                border: none;
+                width: 50px;
+                height: 50px;
+                border-radius: 50%;
+                cursor: pointer;
+                font-size: 18px;
+                font-weight: bold;
+                transition: transform 0.2s;
+            `;
+            tourButton.onmouseover = () => {
+                tourButton.style.background = '#ffa500';
+            };
+            tourButton.onmouseout = () => {
+                tourButton.style.background = '#007bff';
+            };
+            tourButton.onclick = startTour;
+            document.body.appendChild(tourButton);
+        });
+
+
+    </script>
 </body>
 
 </html>

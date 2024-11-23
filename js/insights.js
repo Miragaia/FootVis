@@ -1,4 +1,3 @@
-// Initialize empty player data
 let allPlayerData = [];
 
 Papa.parse("./data/player_stats.csv", {
@@ -8,8 +7,7 @@ Papa.parse("./data/player_stats.csv", {
     allPlayerData = results.data;
     console.log("Player Data Loaded:", allPlayerData);
 
-    // Call the functions to display the charts
-// Inicializa com o gráfico de Top Scorers
+
     displayPlayerStatsChart("top-scorers");
     displayOtherStatsChart();
     displayPositionDonutChart();
@@ -18,7 +16,7 @@ Papa.parse("./data/player_stats.csv", {
 
 function displayPlayerStatsChart(chartType) {
   const chartContainer = d3.select("#player-stats-chart");
-  chartContainer.html(""); // Limpa o gráfico existente antes de desenhar outro
+  chartContainer.html(""); 
 
   const margin = { top: 40, right: 30, bottom: 40, left: 60 };
   const width = 750 - margin.left - margin.right;
@@ -52,7 +50,6 @@ function displayPlayerStatsChart(chartType) {
     .nice()
     .range([height, 0]);
 
-  // Criando a Tooltip no próprio JavaScript, sem precisar de HTML
   const tooltip = d3.select("body")
     .append("div")
     .attr("class", "tooltip")
@@ -75,30 +72,24 @@ function displayPlayerStatsChart(chartType) {
     .attr("width", x.bandwidth())
     .attr("height", player => height - y(player.value))
     .attr("fill", chartType === "top-scorers" ? "#78a798" : "#d69fa1")
-    .style("cursor", "pointer") // Muda o cursor para pointer
-
-    // Evento de mouseover
+    .style("cursor", "pointer") 
     .on("mouseover", function(event, player) {
-      d3.select(this).style("opacity", 1); // Deixa a barra sobre a qual passou com opacidade total
+      d3.select(this).style("opacity", 1); 
 
-      // Exibe a tooltip com o nome do jogador e o número de gols ou assistências
       tooltip.style("visibility", "visible")
         .html(`${player.name} - ${player.value}`)
-        .style("top", (event.pageY - 20) + "px") // Atualiza a posição Y da tooltip
-        .style("left", (event.pageX + 10) + "px"); // Atualiza a posição X da tooltip
+        .style("top", (event.pageY - 20) + "px") 
+        .style("left", (event.pageX + 10) + "px"); 
 
-      // Muda a opacidade das outras barras para 0.7
       svg.selectAll(".bar")
         .filter(function(d) { return d !== player; })
         .style("opacity", 0.7);
     })
 
-    // Evento de mouseout
     .on("mouseout", function() {
-      d3.select(this).style("opacity", 1); // Restaura a opacidade para a barra original
-      tooltip.style("visibility", "hidden"); // Oculta a tooltip
+      d3.select(this).style("opacity", 1); 
+      tooltip.style("visibility", "hidden"); 
 
-      // Restaura a opacidade das outras barras
       svg.selectAll(".bar")
         .style("opacity", 1);
     });
@@ -121,16 +112,10 @@ function displayPlayerStatsChart(chartType) {
     .text(chartType === "top-scorers" ? "Top Scorers" : "Top Assists");
 }
 
-
 document.getElementById("chartSelector").addEventListener("change", (event) => {
   const selectedChart = event.target.value;
   displayPlayerStatsChart(selectedChart);
 });
-
-
-
-
-
 
 function displayOtherStatsChart() {
   const otherStats = allPlayerData
@@ -139,7 +124,7 @@ function displayOtherStatsChart() {
 
   console.log("Other Stats:", otherStats);
 
-  const margin = { top: 40, right: 30, bottom: 40, left: 60 }; // Ajustado o topo para incluir o título
+  const margin = { top: 40, right: 30, bottom: 40, left: 60 };
   const width = 750 - margin.left - margin.right;
   const height = 330 - margin.top - margin.bottom;
 
@@ -150,10 +135,9 @@ function displayOtherStatsChart() {
     .append("g")
     .attr("transform", "translate(" + margin.left*2  + "," + margin.top + ")");
 
-  // Título do gráfico
   svg.append("text")
-    .attr("x", width / 2) // Posiciona o título no centro
-    .attr("y", -margin.top / 2) // Ajusta a posição vertical
+    .attr("x", width / 2)
+    .attr("y", -margin.top / 2) 
     .attr("text-anchor", "middle")
     .style("font-size", "18px")
     .style("font-weight", "bold")
@@ -169,7 +153,6 @@ function displayOtherStatsChart() {
     .nice()
     .range([height, 0]);
 
-  // Tooltip
   const tooltip = d3.select("body")
     .append("div")
     .attr("class", "tooltip")
@@ -182,7 +165,6 @@ function displayOtherStatsChart() {
     .style("font-size", "12px")
     .style("pointer-events", "none");
 
-  // Passes Bars
   svg.selectAll(".bar-passes")
     .data(otherStats)
     .enter().append("rect")
@@ -193,18 +175,17 @@ function displayOtherStatsChart() {
     .attr("height", player => height - y(player.passes))
     .attr("fill", "#e5835e")
     .on("mouseover", function(event, player) {
-      d3.select(this).style("opacity", 0.7); // Diminui a opacidade ao passar o mouse
+      d3.select(this).style("opacity", 0.7); 
       tooltip.style("visibility", "visible")
         .html(`${player.name}<br>Passes: ${player.passes}<br>Tackles: ${player.tackles}`)
-        .style("top", (event.pageY - 10) + "px") // Atualiza a posição Y da tooltip
-        .style("left", (event.pageX + 10) + "px"); // Atualiza a posição X da tooltip
+        .style("top", (event.pageY - 10) + "px") 
+        .style("left", (event.pageX + 10) + "px"); 
     })
     .on("mouseout", function() {
-      d3.select(this).style("opacity", 1); // Restaura a opacidade
-      tooltip.style("visibility", "hidden"); // Esconde a tooltip
+      d3.select(this).style("opacity", 1); 
+      tooltip.style("visibility", "hidden"); 
     });
 
-  // Tackles Bars
   svg.selectAll(".bar-tackles")
     .data(otherStats)
     .enter().append("rect")
@@ -215,18 +196,17 @@ function displayOtherStatsChart() {
     .attr("height", player => height - y(player.tackles))
     .attr("fill", "#6aaa96")
     .on("mouseover", function(event, player) {
-      d3.select(this).style("opacity", 0.7); // Diminui a opacidade ao passar o mouse
+      d3.select(this).style("opacity", 0.7); 
       tooltip.style("visibility", "visible")
         .html(`${player.name}<br>Passes: ${player.passes}<br>Tackles: ${player.tackles}`)
-        .style("top", (event.pageY - 10) + "px") // Atualiza a posição Y da tooltip
-        .style("left", (event.pageX + 10) + "px"); // Atualiza a posição X da tooltip
+        .style("top", (event.pageY - 10) + "px") 
+        .style("left", (event.pageX + 10) + "px"); 
     })
     .on("mouseout", function() {
-      d3.select(this).style("opacity", 1); // Restaura a opacidade
-      tooltip.style("visibility", "hidden"); // Esconde a tooltip
+      d3.select(this).style("opacity", 1);
+      tooltip.style("visibility", "hidden"); 
     });
 
-  // Eixo X
   svg.append("g")
     .selectAll(".x-axis")
     .data([0])
@@ -238,7 +218,6 @@ function displayOtherStatsChart() {
     .attr("transform", "rotate(15)")
     .style("text-anchor", "start");
 
-  // Eixo Y
   svg.append("g")
     .selectAll(".y-axis")
     .data([0])
@@ -262,7 +241,7 @@ function displayPositionDonutChart() {
     count
   }));
 
-  const totalPlayers = d3.sum(data, d => d.count); // Total de jogadores
+  const totalPlayers = d3.sum(data, d => d.count);
 
   const width = 400;
   const height = 330;

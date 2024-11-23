@@ -1,13 +1,12 @@
 .field { fill: #6c9f6d; }
 .line { stroke: white; stroke-width: 2px; fill: #6c9f6d; }
-.player { fill: lightgray; }  /* Cor para todos os jogadores */
-.highlight { fill:#f0a500; } /* Cor para o jogador em destaque */
+.player { fill: lightgray; }
+.highlight { fill:#f0a500; }
 .text { fill: white; font-size: 12px; text-anchor: middle; }
 
 .bar { cursor: pointer !important; }
 .axis-labels { font-size: 14px; font-weight: bold; }
 .title { text-anchor: middle; font-size: 18px; font-weight: bold; }
-
 
 .tooltip {
     display: none;
@@ -32,7 +31,7 @@
 }
 
 #radarChart {
-    width: 35%; /* Adjust as needed */
+    width: 35%;
     justify-content: center;
     align-items: center;
     display: flex;
@@ -41,10 +40,9 @@
 }
 
 #table-container {
-    width: 45%; /* Adjust as needed */
+    width: 45%;
     margin-top: 20px;
-    margin-left: 20px;  
-
+    margin-left: 20px;
 }
 
 #heatmap-container {
@@ -55,27 +53,25 @@
     display: flex;
     flex-direction: column;
     text-align: left;
-
 }
+
 .selector-container {
     display: flex;
-    justify-content: space-between; /* Space out the title and dropdown */
-    align-items: center; /* Vertically center both elements */
-    margin-bottom: 15px; /* Space between the selector and the field */
-    width: 100%; /* Make sure it stretches across the container */
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    width: 100%;
 }
 
-/* Title styling */
 .heatmap-title {
     font-size: 20px;
     font-weight: bold;
     color: #333;
     margin: 0;
-    text-align: left; /* Align the title to the left */
-    flex: 1; /* Allow the title to take up space to the left */
+    text-align: left;
+    flex: 1;
 }
 
-/* Dropdown styling */
 .metric-dropdown {
     padding: 10px 15px;
     font-size: 14px;
@@ -83,15 +79,14 @@
     border: 1px solid #ccc;
     border-radius: 5px;
     cursor: pointer;
-    max-width: 180px; /* Limit the width of the dropdown */
+    max-width: 180px;
     text-align: center;
 }
 
 #metric-selector {
-    margin-top: 20px;   
+    margin-top: 20px;
 }
 
-/* Two-column table style */
 table {
     width: 100%;
     border-collapse: collapse;
@@ -109,7 +104,6 @@ th {
     font-weight: bold;
 }
 
-/* Set background color based on value (optional) */
 td.percentile-value {
     background-color: #f8d7da;
     color: #721c24;
@@ -130,9 +124,13 @@ td.percentile-good {
 }
 
 #modal {
-z-index: 1000;
+    z-index: 1000;
 }
 
 #modal-overlay {
-z-index: 999;
+    z-index: 999;
+}
+
+svg {
+    overflow: visible;
 }

@@ -54,7 +54,6 @@ function searchPlayer(playerName) {
     })
     .catch((error) => {
       console.error("Error fetching player data:", error);
-      // quando da erro na busca do jogador, exibe o quadrado cinza, a dizer no meio "No image available"
       const playerImage = document.getElementById("playerImage");
       playerImage.src = "./assets/no-image-available.jpg";
       playerImage.alt = "No image available";
@@ -300,7 +299,7 @@ function drawPieChart(data, maxMinutes) {
 
   const legend = svg
     .append("g")
-    .attr("transform", `translate(${width - 160}, 40)`); // Desloca para a direita
+    .attr("transform", `translate(${width - 160}, 40)`); 
 
   legend
     .selectAll(".legend-circle")
@@ -456,7 +455,6 @@ function calculateStats(playerData, allPlayerData) {
   let statValues = {};
 
   stats.forEach(stat => {
-    // Get all values for the stat from all players, ensuring they are numbers
     console.log(allPlayerData);
     const values = allPlayerData.map(player => {
       const value = player[stat];
@@ -464,16 +462,14 @@ function calculateStats(playerData, allPlayerData) {
       return isNaN(numericValue) ? 0 : numericValue;
     });
 
-    console.log(`Values for ${stat}:`, values); // Debugging step
 
-    // Calculate max, min, and avg
+
     statValues[`${stat}_max`] = Math.max(...values);
     statValues[`${stat}_min`] = Math.min(...values);
-    // adiciona ainda o jogador com max e min
     statValues[`${stat}_max_player`] = allPlayerData[values.indexOf(statValues[`${stat}_max`])].Player;
     statValues[`${stat}_min_player`] = allPlayerData[values.indexOf(statValues[`${stat}_min`])].Player;
     const avg = values.reduce((sum, value) => sum + value, 0) / values.length;
-    statValues[`${stat}_avg`] = Math.round(avg * 100) / 100; // Round to 2 decimal places
+    statValues[`${stat}_avg`] = Math.round(avg * 100) / 100; 
     console.log(statValues);
   });
 
@@ -694,25 +690,22 @@ function populatePlayerTable(playerData,allPlayerData) {
 
       row.on("click", () => {
         console.log(item);
-    
-        // Assuming item.dbvalue corresponds to the stat name (e.g., "Shots/90")
-        const statKey = item.dbvalue;
+            const statKey = item.dbvalue;
     
         showModal({
             metric: item.metric,
             explain: item.explain,
             type: item.type,
             per90: item.per90,
-            maxPer90: statValues[`${statKey}_max`],   // Corrected max value lookup
-            minPer90: statValues[`${statKey}_min`],   // Corrected min value lookup
-            avgPer90: statValues[`${statKey}_avg`],   // Corrected avg value lookup
+            maxPer90: statValues[`${statKey}_max`],   
+            minPer90: statValues[`${statKey}_min`],   
+            avgPer90: statValues[`${statKey}_avg`],   
             maxPlayer: statValues[`${statKey}_max_player`],
             minPlayer: statValues[`${statKey}_min_player`],
         });
     });
   });
 
-    // Função de ordenação da tabela
     let sortOrder = "asc";
     function sortTable(column) {
       const sortedData = data.sort((a, b) => {
@@ -833,19 +826,19 @@ function calculatePercentileForRadar(metric, value) {
 
 function getPlayerMetrics(playerData) {
   const data = [
-    { axis: "Shots/90", value: calculatePercentileForRadar("Shots/90", playerData["Shots/90"]), category: "Attacking", metric: "Shots", explain: "Shots per 90 minutes" },
-    { axis: "SoT/90", value: calculatePercentileForRadar("SoT/90", playerData["SoT/90"]), category: "Attacking", metric: "Shots on Target", explain: "Shots on Target per 90 minutes" },
-    { axis: "Goals/90", value: calculatePercentileForRadar("Goals/90", playerData["Goals/90"]), category: "Attacking", metric: "Goals", explain: "Goals per 90 minutes" },
-    { axis: "Assists/90", value: calculatePercentileForRadar("Assists/90", playerData["Assists/90"]), category: "Attacking", metric: "Assists", explain: "Assists per 90 minutes" },
-    { axis: "SCA", value: calculatePercentileForRadar("SCA", playerData["SCA"]), category: "Attacking", metric: "Shot Creating Actions", explain: "Shot Creating Actions per 90 minutes" },
-    { axis: "Int/90", value: calculatePercentileForRadar("Int/90", playerData["Int/90"]), category: "Defending", metric: "Interceptions", explain: "Interceptions per 90 minutes" },
-    { axis: "TklWon/90", value: calculatePercentileForRadar("TklWon/90", playerData["TklWon/90"]), category: "Defending", metric: "Tackles Won", explain: "Tackles Won per 90 minutes" },
-    { axis: "Recov/90", value: calculatePercentileForRadar("Recov/90", playerData["Recov/90"]), category: "Defending", metric: "Recoveries", explain: "Recoveries per 90 minutes" },
-    { axis: "Fls/90", value: calculatePercentileForRadar("Fls/90", playerData["Fls/90"]), category: "Defending", metric: "Fouls", explain: "Fouls per 90 minutes" },
-    { axis: "Clr", value: calculatePercentileForRadar("Clr", playerData["Clr"]), category: "Defending", metric: "Clearances", explain: "Clearances per 90 minutes" },
-    { axis: "PasTotAtt", value: calculatePercentileForRadar("PasTotAtt", playerData["PasTotAtt"]), category: "Possession", metric: "Passes Attempted", explain: "Passes Attempted per 90 minutes" },
-    { axis: "PasTotCmp%", value: calculatePercentileForRadar("PasTotCmp%", playerData["PasTotCmp%"]), category: "Possession", metric: "Pass Completion %", explain: "Pass Completion % per 90 minutes" },
-    { axis: "ToSuc", value: calculatePercentileForRadar("ToSuc", playerData["ToSuc"]), category: "Possession", metric: "Take-Ons Successful", explain: "Dribbling Defender Successful per 90 minutes" }
+    { axis: "Shots/90", value: calculatePercentileForRadar("Shots/90", playerData["Shots/90"]), category: "Attacking", metric: "Shots", explain: "Shots per 90 minutes percentil" },
+    { axis: "SoT/90", value: calculatePercentileForRadar("SoT/90", playerData["SoT/90"]), category: "Attacking", metric: "Shots on Target", explain: "Shots on Target per 90 minutes percentil" },
+    { axis: "Goals/90", value: calculatePercentileForRadar("Goals/90", playerData["Goals/90"]), category: "Attacking", metric: "Goals", explain: "Goals per 90 minutes percentil" },
+    { axis: "Assists/90", value: calculatePercentileForRadar("Assists/90", playerData["Assists/90"]), category: "Attacking", metric: "Assists", explain: "Assists per 90 minutes percentil" },
+    { axis: "SCA", value: calculatePercentileForRadar("SCA", playerData["SCA"]), category: "Attacking", metric: "Shot Creating Actions", explain: "Shot Creating Actions per 90 minutes percentil" },
+    { axis: "Int/90", value: calculatePercentileForRadar("Int/90", playerData["Int/90"]), category: "Defending", metric: "Interceptions", explain: "Interceptions per 90 minutes percentil" },
+    { axis: "TklWon/90", value: calculatePercentileForRadar("TklWon/90", playerData["TklWon/90"]), category: "Defending", metric: "Tackles Won", explain: "Tackles Won per 90 minutes percentil" },
+    { axis: "Recov/90", value: calculatePercentileForRadar("Recov/90", playerData["Recov/90"]), category: "Defending", metric: "Recoveries", explain: "Recoveries per 90 minutes percentil" },
+    { axis: "Fls/90", value: calculatePercentileForRadar("Fls/90", playerData["Fls/90"]), category: "Defending", metric: "Fouls", explain: "Fouls per 90 minutes percentil" },
+    { axis: "Clr", value: calculatePercentileForRadar("Clr", playerData["Clr"]), category: "Defending", metric: "Clearances", explain: "Clearances per 90 minutes percentil" },
+    { axis: "PasTotAtt", value: calculatePercentileForRadar("PasTotAtt", playerData["PasTotAtt"]), category: "Possession", metric: "Passes Attempted", explain: "Passes Attempted per 90 minutes percentil" },
+    { axis: "PasTotCmp%", value: calculatePercentileForRadar("PasTotCmp%", playerData["PasTotCmp%"]), category: "Possession", metric: "Pass Completion %", explain: "Pass Completion % per 90 minutes percentil" },
+    { axis: "ToSuc", value: calculatePercentileForRadar("ToSuc", playerData["ToSuc"]), category: "Possession", metric: "Take-Ons Successful", explain: "Dribbling Defender Successful per 90 minutes percentil" }
   ];
   
   renderHeatmap(playerData);
@@ -989,7 +982,7 @@ function renderRadarChart(playerData) {
     
       const legend = svg
         .append("g")
-        .attr("transform", "translate(0, -10)"); // Ajustando a posição para cima
+        .attr("transform", "translate(0, -10)"); 
     
 
         legend
@@ -997,8 +990,8 @@ function renderRadarChart(playerData) {
           .data(legendData)
           .join("circle")
           .attr("class", "legend-circle")
-          .attr("cx", (d, i) => -100 + i * 100)  // Espaço entre as bolinhas
-          .attr("cy", -outerRadius - 30)  // Posição vertical no topo
+          .attr("cx", (d, i) => -100 + i * 100) 
+          .attr("cy", -outerRadius - 30)  
           .attr("r", 8)
           .attr("fill", (d) => d.color);
 
@@ -1007,8 +1000,8 @@ function renderRadarChart(playerData) {
           .data(legendData)
           .join("text")
           .attr("class", "legend-text")
-          .attr("x", (d, i) => -80 + i * 100)  // Alinhando com as bolinhas
-          .attr("y", -outerRadius - 26)  // Posição do texto próximo às bolinhas
+          .attr("x", (d, i) => -80 + i * 100)  
+          .attr("y", -outerRadius - 26) 
           .style("text-anchor", "start")
           .style("font-size", "12px")
           .style("font-weight", "bold")
@@ -1017,12 +1010,11 @@ function renderRadarChart(playerData) {
       
 }
 
-function renderHeatmap(playerData, metricType = "tackles") {  // Define default metricType as "tackles"
+function renderHeatmap(playerData, metricType = "tackles") {  
   const svg = d3.select("#field2");
   const width = +svg.attr("width");
   const height = +svg.attr("height");
 
-  // Prepare data for tackles and touches
   const metricsData = {
     tackles: {
       TklDef3rd: playerData.TklDef3rd || 0,
@@ -1036,7 +1028,6 @@ function renderHeatmap(playerData, metricType = "tackles") {  // Define default 
     }
   };
 
-  // Function to get the data based on selected metric
   function getMetricData(metricType) {
     const metric = metricsData[metricType];
     return [
@@ -1046,37 +1037,31 @@ function renderHeatmap(playerData, metricType = "tackles") {  // Define default 
     ];
   }
 
-  // Function to render the heatmap
   function render() {
     const thirdData = getMetricData(metricType);
 
-    // Calculate the maximum value for the color scale
     const maxMetric = d3.max(thirdData, (d) => d.value);
 
-    // Define the color scale (Inverted: lower values = green, higher values = red)
     const colorScale = d3
       .scaleLinear()
       .domain([0, maxMetric / 2, maxMetric || 1])
-      .range(["#00ff00", "#ffff00", "#ff0000"]); // Green to yellow to red
+      .range(["#00ff00", "#ffff00", "#ff0000"]); 
 
-    svg.selectAll("*").remove(); // Clear previous elements
+    svg.selectAll("*").remove(); 
 
-    // Draw football field layout (same as before)
     drawField(svg, width, height);
 
-    // Apply heatmap to the vertical thirds
     const thirdWidth = width / 3;
     thirdData.forEach((third, i) => {
       svg
         .append("rect")
-        .attr("x", i * thirdWidth + 10) // Avoid overlap with field lines
-        .attr("y", 10) // Avoid overlap with field lines
-        .attr("width", thirdWidth - 20) // Avoid overlap with field lines
+        .attr("x", i * thirdWidth + 10) 
+        .attr("y", 10) 
+        .attr("width", thirdWidth - 20) 
         .attr("height", height - 20)
         .attr("fill", colorScale(third.value))
         .attr("opacity", 0.7);
 
-      // Add labels
       svg
         .append("text")
         .attr("x", i * thirdWidth + thirdWidth / 2)
@@ -1088,7 +1073,6 @@ function renderHeatmap(playerData, metricType = "tackles") {  // Define default 
         .style("font-size", "14px")
         .style("font-weight", "bold");
 
-      // Add the value text
       svg
         .append("text")
         .attr("x", i * thirdWidth + thirdWidth / 2)
@@ -1100,14 +1084,11 @@ function renderHeatmap(playerData, metricType = "tackles") {  // Define default 
         .style("font-weight", "bold");
     });
 
-    // Render the scale
     renderIndicativeScale(maxMetric);
 
-    // Update the title based on the selected metric
     updateTitle(metricType);
   }
 
-  // Function to render field layout
   function drawField(svg, width, height) {
     svg
       .append("rect")
@@ -1186,7 +1167,6 @@ function renderHeatmap(playerData, metricType = "tackles") {  // Define default 
       .attr("class", "line");
   }
 
-  // Function to render the scale
   function renderIndicativeScale(maxMetric) {
     const scaleSvg = d3.select("#indicative-scale");
     const width = +scaleSvg.attr("width");
@@ -1203,8 +1183,8 @@ function renderHeatmap(playerData, metricType = "tackles") {  // Define default 
       .attr("x2", "100%")
       .attr("y2", "0%");
 
-    gradient.append("stop").attr("offset", "0%").attr("stop-color", "#00ff00"); // Green
-    gradient.append("stop").attr("offset", "50%").attr("stop-color", "#ffff00"); // Yellow
+    gradient.append("stop").attr("offset", "0%").attr("stop-color", "#00ff00");
+    gradient.append("stop").attr("offset", "50%").attr("stop-color", "#ffff00"); 
     gradient
       .append("stop")
       .attr("offset", "100%")
@@ -1219,7 +1199,6 @@ function renderHeatmap(playerData, metricType = "tackles") {  // Define default 
       .style("fill", "url(#scaleGradient)")
       .attr("stroke", "#000");
 
-    // Add scale labels
     scaleSvg
       .append("text")
       .attr("x", 10)
@@ -1239,31 +1218,27 @@ function renderHeatmap(playerData, metricType = "tackles") {  // Define default 
       .style("font-size", "12px");
   }
 
-  // Function to update the title based on the selected metric
   function updateTitle(metricType) {
     const title = metricType === "tackles" ? "Tackles Heatmap" : "Touches Heatmap";
     d3.select("#heatmap-title")
-      .text(title) // Set the new title based on metric
+      .text(title) 
       .style("font-size", "18px")
       .style("font-weight", "bold")
       .style("text-anchor", "middle")
       .style("fill", "#000");
   }
 
-  // Event listener for metric dropdown change
   d3.select("#metric-dropdown").on("change", function() {
     const selectedMetric = this.value;
-    renderHeatmap(playerData, selectedMetric); // Re-render heatmap based on selection
+    renderHeatmap(playerData, selectedMetric); 
   });
 
-  // Initial render with default metric (tackles)
   render();
 }
 
 function showModal(data) {
   console.log("showModal called with data:", data);
 
-  // Check if modal elements exist in the DOM
   if (!d3.select("#modal").node()) {
     console.error("#modal element is missing in the DOM.");
     return;
@@ -1274,7 +1249,6 @@ function showModal(data) {
     return;
   }
 
-  // Populate modal content with the new data structure
   d3.select("#modal-content").html(`
     <p><strong>Metric:</strong> ${data.metric}</p>
     <p><strong>Description:</strong> ${data.explain}</p>
@@ -1285,11 +1259,9 @@ function showModal(data) {
     <p><strong>Average Per 90:</strong> ${data.avgPer90}</p>
   `);
 
-  // Display the modal and overlay
   d3.select("#modal").style("display", "block");
   d3.select("#modal-overlay").style("display", "block");
 
-  // Close the modal when the close button or overlay is clicked
   d3.select("#modal-close").on("click", function () {
     d3.select("#modal").style("display", "none");
     d3.select("#modal-overlay").style("display", "none");

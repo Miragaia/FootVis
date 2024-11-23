@@ -6,21 +6,20 @@
     font-size: 18px;
     line-height: 1.6;
     margin: 10px 20px;
-    flex: 1 1 200px; /* Assegura que as divs cresçam ou encolham conforme necessário, com largura mínima de 200px */
+    flex: 1 1 200px;
 }
 
 .player-image-container {
-    flex: 0 0 200px; /* Define a largura da div */
+    flex: 0 0 200px;
     margin-top: 10px;
     margin-left: 20px;
-
 }
 
 .player-image-container img {
-    width: 200px; /* Define the width of the player image */
+    width: 200px;
     height: auto;
     border: 1px solid #ccc;
-    border-radius: 10px; /* Optional: add rounded corners */
+    border-radius: 10px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s, box-shadow 0.3s;
 }
@@ -35,20 +34,17 @@
     justify-content: center;
     display: flex;
     flex-direction: column;
-    align-items: center; /* Alinha os conteúdos das divs no centro */
-    text-align: left !important; /* Centraliza o texto */
+    align-items: center;
+    text-align: left !important;
     font-size: 18px;
     line-height: 1.6;
     margin: 10px 30px;
-    flex: 1 1 200px; /* Assegura que as divs cresçam ou encolham conforme necessário, com largura mínima de 200px */
+    flex: 1 1 200px;
 }
-
 
 .player-details-container p {
-    color: #333;;
+    color: #333;
 }
-
-
 
 hr {
     border: 0;
@@ -62,7 +58,6 @@ h1 {
     text-align: center;
 }
 
-/* Back button styling */
 .player-back-button {
     display: inline-block;
     margin-bottom: 20px;
@@ -80,7 +75,6 @@ h1 {
     background-color: #0056b3;
 }
 
-/* Player details section */
 .player-info {
     display: flex;
     flex-direction: column;
@@ -97,7 +91,6 @@ h1 {
     color: #333;
 }
 
-/* player-details.css */
 .player-container {
     margin: 20px;
 }
@@ -120,7 +113,6 @@ h2 {
     margin: 5px 0;
 }
 
-/* Player tabs */
 .player-tabs {
     display: flex;
     margin-bottom: 10px;
@@ -144,17 +136,9 @@ h2 {
     font-weight: bold;
 }
 
-/* Player details section styling
-.player-details-section {
-    display: none;
-    margin-top: 20px;
-} */
-
-/* Optional styling for larger screens */
 @media (min-width: 768px) {
     .player-info {
         flex-direction: row;
         justify-content: space-between;
     }
 }
-

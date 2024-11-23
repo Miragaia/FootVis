@@ -120,10 +120,8 @@ function loadPlayersToTable() {
         },
     });
 }
-
-let sortColumn = null; // Guarda a coluna atualmente sendo ordenada
-let sortDirection = 'asc'; // Direção da ordenação: 'asc' (ascendente) ou 'desc' (descendente)
-
+let sortColumn = null; 
+let sortDirection = 'asc'; 
 function renderPlayers(filteredPlayers, headers) {
     const tbody = document.getElementById('playersTableBody');
     tbody.innerHTML = "";
@@ -164,7 +162,6 @@ function renderTableHeaders(headers) {
         const th = document.createElement("th");
         th.textContent = header;
 
-        // Adiciona funcionalidade de sort
         th.onclick = () => {
             if (sortColumn === header) {
                 sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
@@ -197,11 +194,11 @@ function renderTableHeaders(headers) {
         };
 
         if (sortColumn === header) {
-            th.style.backgroundColor = sortDirection === 'asc' ? '#cce5ff' : '#f8d7da'; // Azul claro para asc e vermelho claro para desc
-            th.style.color = sortDirection === 'asc' ? '#004085' : '#721c24'; // Azul escuro para asc e vermelho escuro para desc
+            th.style.backgroundColor = sortDirection === 'asc' ? '#cce5ff' : '#f8d7da';
+            th.style.color = sortDirection === 'asc' ? '#004085' : '#721c24'; 
         } else {
-            th.style.backgroundColor = ''; // Reseta para cabeçalhos não selecionados
-            th.style.color = ''; // Reseta a cor do texto para cabeçalhos não selecionados
+            th.style.backgroundColor = ''; 
+            th.style.color = ''; 
         }
 
         tableHeaderElement.appendChild(th);
@@ -211,15 +208,12 @@ function renderTableHeaders(headers) {
 function showSection(section) {
     const headers = headersMapping[section] || [];
     
-    // Renderiza os cabeçalhos com funcionalidade de sort
     renderTableHeaders(headers);
 
     currentPage = 1; 
 
-    // Renderiza os jogadores para a seção escolhida
     renderPlayers(playersToTable, headers);
 
-    // Atualiza a aba ativa
     const activeSection = document.querySelector('.tab-button.active');
     if (activeSection) {
         activeSection.classList.remove('active');
@@ -426,7 +420,6 @@ function applyCombinedFilters() {
         return withinAgeRange && matchesSearch && matchesCompetition && matchesPosition && withinGoalsRange && withinAssistsRange && matchesCard;
     });
 
-    // Atualiza a tabela
     currentPage = 1;
     const currentSection = document.querySelector('.tab-button.active').dataset.section;
     renderPlayers(filteredPlayers, headersMapping[currentSection]);
