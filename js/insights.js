@@ -228,13 +228,15 @@ function displayOtherStatsChart() {
 
 
 function displayPositionDonutChart() {
-  const positions = allPlayerData.flatMap(player => player.Position);
+  const positions = allPlayerData.flatMap(player => player.Position).filter(position => position !== undefined);
 
   const positionCount = d3.rollup(positions, v => v.length, d => d);
   const data = Array.from(positionCount, ([position, count]) => ({
     position,
     count
   }));
+
+ 
 
   const totalPlayers = d3.sum(data, d => d.count);
 

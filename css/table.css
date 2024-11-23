@@ -1,18 +1,24 @@
 .content {
-    width: 70dvw;
-    padding: 1rem;
-    display: inline-block;
-    vertical-align: top; 
+  width: 70vw;
+  padding: 1rem;
+  display: inline-block;
+  vertical-align: top;
+
 }
 
 .filters {
-    width: 30dvw;
-    padding: 1rem;
-    display: inline-block; 
-    border-left: 1px solid #8a8a8a;
-    vertical-align: top; 
+  width: 30vw;
+  padding: 1rem;
+  display: inline-block;
+  border-left: 1px solid #8a8a8a;
+  vertical-align: top;
+  align-items: right ;
+  justify-content: right;
+  align-content: end;
+  margin-left: auto;
+
 }
-  
+
   .players-table {
     width: 100%;
     border-collapse: collapse;
