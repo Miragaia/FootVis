@@ -113,7 +113,7 @@ function loadPlayersToTable() {
             $("#assists").val(minAssists + " - " + maxAssists);
 
             showSection('general'); 
-
+            
         },
         error: (error) => {
             console.error("Error loading CSV:", error);
@@ -427,6 +427,7 @@ function applyCombinedFilters() {
 
 
 document.getElementById('clear-filters-btn').addEventListener('click', () => {
+    filteredPlayers = [];
     currentSearchTerm = "";
     document.getElementById('playerFilterSearch').value = "";
     loadPlayersToTable();
