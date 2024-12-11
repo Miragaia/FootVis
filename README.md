@@ -1,25 +1,37 @@
-# FootVis - Estatisticas de Jogadores de Futebol
+# FootVis - Statistics Visualization for Football Players
 
-## Dados:
+**FootVis** is a data visualization application focused on football players' statistics for the 2022/2023 season. The project aims to facilitate the analysis and understanding of player performance through interactive and intuitive visualizations.
 
-**Dataset:** 
-- Jogadores: https://www.kaggle.com/datasets/vivovinco/20222023-football-player-stats 
-- Equipas: https://www.kaggle.com/datasets/vivovinco/20222023-football-team-stats
+## **Project Description**
+The project leverages detailed player data, organized by player, team, and competition, to provide comprehensive insights. Features include visualizing general statistics, detailed analysis of specific players, and comparisons between two players.
 
-## Contexto:
-- O projeto baseia-se num conjunto de dados de estatísticas de jogadores e equipas da temporada 2022/2023 de futebol. 
-- O dataset utilizado contém mais de 100 colunas que abrangem informações detalhadas sobre jogadores, como minutos jogados, golos, assistências, passes, cruzamentos, dribles, interceções, e várias métricas específicas de desempenho (como o percentual de passes completos e tackles vencidos). 
-- As estatísticas estão organizadas por jogador, equipa e competição, o que fornece uma visão abrangente do desempenho de cada jogador ao longo da temporada.
+## **Features**
+- **Insights Page**: General dataset overview, top players, and key metrics visualizations.
+- **Players Page**: Full player details with interactive charts.
+- **Comparison Page**: Side-by-side comparisons between two players.
+- **Interactive Filters**: Refine data by league, position, age, and more.
+- **Visual Aids**: Step-by-step tours and tooltips to enhance user experience.
+
+## **Datasets**
+- Data utilized is available at:  
+  [2022/2023 Football Player Stats](https://www.kaggle.com/datasets/vivovinco/20222023-football-player-stats)
+
+## **Technologies Used**
+- **Frontend**:
+ - `D3.js`: Data-driven documents for interactive visualizations.
+- **Helper Libraries**:
+  - `Driver.js`: For interactive tours.
+  - `Tooltips`: To provide quick explanations about interface elements.
 
 
-## Contexto
+## **Deployment**
+- The project is deployed on GitHub Pages:  
+  [FootVis - Statistics Visualization for Football Players](https://cristianonicolau.github.io/FootVis/) - the best resolution is 1920x1080 with 100% zoom.
+- You also can run the project locally by cloning the repository and opening the `index.html` file in your browser.
 
-- O futebol é um desporto globalmente seguido e o desempenho dos jogadores é uma métrica fundamental para análise de desempenho, estratégia de jogo, recrutamento de novos talentos e até mesmo em apostas desportivas. Com a crescente disponibilidade de grandes volumes de dados sobre os jogadores, a análise visual de tais dados torna-se essencial para facilitar o entendimento e a tomada de decisões, tanto por fãs quanto por profissionais.
+## **Project Structure**
+- **`/presentation`**: You can see the apresentations of the project, and the [demo video](https://youtu.be/ZY4r0Iy4Fos).
 
-## Utilizadores
-
-- Os utilizadores identificados para esta aplicação incluem três tipos principais:
-
-    - **Fã de Futebol:** Interessa-se por comparar jogadores, acompanhar estatísticas detalhadas e aprofundar seu conhecimento sobre o desempenho dos seus jogadores favoritos e equipas.
-    - **Scouter: Profissional:** Responsável pela análise de jogadores para possíveis contratações em equipas. Precisa de uma visão detalhada do desempenho individual dos jogadores, incluindo métricas específicas como o número de passes progressivos, tackles e ações que levam a remates.
-    - **Apostador em Jogos de Futebol:** Utiliza dados estatísticos para identificar tendências no desempenho dos jogadores e equipas, com o objetivo de tomar decisões informadas sobre apostas em jogos e eventos específicos.
+## **Authors**
+- Miguel Miragaia - 108317  
+- Cristiano Nicolau - 108536
