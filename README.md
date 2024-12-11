@@ -26,7 +26,7 @@ The project leverages detailed player data, organized by player, team, and compe
 
 ## **Deployment**
 - The project is deployed on GitHub Pages:  
-  [FootVis - Statistics Visualization for Football Players](https://cristianonicolau.github.io/FootVis/) - the best resolution is 1920x1080 with 100% zoom.
+  [FootVis - Statistics Visualization for Football Players](https://cristiano-nicolau.github.io/FootVis/) - the best resolution is 1920x1080 with 100% zoom.
 - You also can run the project locally by cloning the repository and opening the `index.html` file in your browser.
 
 ## **Project Structure**
